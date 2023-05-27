@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class GptApi : MonoBehaviour
 {
 
-    private const string OPENAI_API_KEY = "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";
+    private const string OPENAI_API_KEY = "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";
     private const string SYSTEM_PROMPT = "You are a little helper named Bloby, who sits in my windows 11 desktop and answers questions about my file system in a cheerful way";
 
     [System.Serializable]
@@ -24,31 +24,50 @@ public class GptApi : MonoBehaviour
         public string content;
     }
 
+    [System.Serializable]
     private class ChatResponse
     {
+        public string id;
+        public string @object;
+        public long created;
+        public string model;
+        public Usage usage;
         public ChatChoice[] choices;
     }
 
+    [System.Serializable]
+    private class Usage
+    {
+        public int prompt_tokens;
+        public int completion_tokens;
+        public int total_tokens;
+    }
+
+    [System.Serializable]
     private class ChatChoice
     {
         public ChatMessage message;
+        public string finish_reason;
+        public int index;
     }
 
+    [System.Serializable]
     private class ChatMessage
     {
+        public string role;
         public string content;
     }
 
+
     public IEnumerator Chat(string inputText)
     {
-        Debug.Log("Starting Coroutine");
         string url = "https://api.openai.com/v1/chat/completions";
 
         ChatRequest chatRequest = new ChatRequest
         {
             model = "gpt-3.5-turbo",
             messages = new Message[]
-            {
+            { //TODO: will need to make this more complex to remember any context at all
                 new Message { role = "system", content = SYSTEM_PROMPT },
                 new Message { role = "user", content = inputText }
             },
@@ -69,12 +88,12 @@ public class GptApi : MonoBehaviour
         if (www.result == UnityWebRequest.Result.Success)
         {
             string jsonResponse = www.downloadHandler.text;
-            Debug.Log(jsonResponse);
             ChatResponse chatResponse = JsonUtility.FromJson<ChatResponse>(jsonResponse);
 
             if (chatResponse.choices != null && chatResponse.choices.Length > 0)
             {
                 string messageContent = chatResponse.choices[0].message.content;
+                // TODO: maybe send this message out of the coroutine with an event emitter?
                 Debug.Log(messageContent);
             }
         }
@@ -82,8 +101,6 @@ public class GptApi : MonoBehaviour
         {
             Debug.LogError("Error: " + www.error);
         }
-
-        Debug.Log("Finished Coroutine");
         www.Dispose();
     }
 
@@ -91,7 +108,8 @@ public class GptApi : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Starting Script");
+        // put in chat input here for now.
+        // TODO: maybe use event emitters to feed in input string as well
         StartCoroutine(Chat("Hi Blobby!!!"));
     }
 
