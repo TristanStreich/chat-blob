@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Text;
+using System.IO;
 using UnityEngine.Networking;
 
 
@@ -9,7 +10,7 @@ public class GptApi : MonoBehaviour
     //to make it a singleton
     public static GptApi gpt = null;
 
-    private const string OPENAI_API_KEY = "sk-1GInhO1MtUbcgKlQcBdk" + "T3BlbkFJceMB" + "YoqACRmbSPZWRy3C";
+    private string OPENAI_API_KEY = File.ReadAllText(".api_key");
     private const string SYSTEM_PROMPT = "You are a little helper named Bloby, who sits in my windows 11 desktop and answers questions about my file system in a cheerful way";
 
     [System.Serializable]
