@@ -3,8 +3,11 @@ using System.Collections;
 using System.Text;
 using UnityEngine.Networking;
 
+
 public class GptApi : MonoBehaviour
 {
+    //to make it a singleton
+    public static GptApi gpt = null;
 
     private const string OPENAI_API_KEY = "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";
     private const string SYSTEM_PROMPT = "You are a little helper named Bloby, who sits in my windows 11 desktop and answers questions about my file system in a cheerful way";
@@ -58,7 +61,17 @@ public class GptApi : MonoBehaviour
         public string content;
     }
 
-
+    private void Awake()
+    {
+        if (gpt == null)
+        {
+            gpt = this;
+        }
+        else
+        {
+            DestroyImmediate(this);
+        }
+    }
     public IEnumerator Chat(string inputText)
     {
         string url = "https://api.openai.com/v1/chat/completions";
@@ -95,11 +108,13 @@ public class GptApi : MonoBehaviour
                 string messageContent = chatResponse.choices[0].message.content;
                 // TODO: maybe send this message out of the coroutine with an event emitter?
                 Debug.Log(messageContent);
+                InputAndDisplay.UIInput.GPTTextDisplay.text = messageContent;
             }
         }
         else
         {
             Debug.LogError("Error: " + www.error);
+            InputAndDisplay.UIInput.GPTTextDisplay.text = ("Error: " + www.error);
         }
         www.Dispose();
     }
@@ -109,6 +124,7 @@ public class GptApi : MonoBehaviour
     void Start()
     {
         // put in chat input here for now.
+        // I just run everything in the coroutine
         // TODO: maybe use event emitters to feed in input string as well
         StartCoroutine(Chat("Hi Blobby!!!"));
     }
