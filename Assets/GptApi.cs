@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 public class GptApi : MonoBehaviour
 {
 
-    private const string OPENAI_API_KEY = "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";
+    private const string OPENAI_API_KEY = "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";
     private const string SYSTEM_PROMPT = "You are a little helper named Bloby, who sits in my windows 11 desktop and answers questions about my file system in a cheerful way";
 
     [System.Serializable]
