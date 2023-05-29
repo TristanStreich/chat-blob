@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+
+using static GptApi.ChatResponse;
 
 public class InputAndDisplay : MonoBehaviour
 {
@@ -25,8 +28,22 @@ public class InputAndDisplay : MonoBehaviour
 
     public void SendMessage()
     {
-        StartCoroutine(GptApi.gpt.Chat(TextInput.text));
+        GptApi.gpt.Chat(TextInput.text, HandleGPTResponse);
         TextInput.text = "";
     }
-   
+
+
+    private void HandleGPTResponse(GptApi.ChatResponse? response, string? error) {
+        var x = response.choices[0];
+        if (error != null) {
+            Debug.LogError("Error: " + error);
+            GPTTextDisplay.text = ("Error: " + error);
+        } else if (response != null) {
+                string messageContent = response.choices[0].message.content;
+                Debug.Log(messageContent);
+                GPTTextDisplay.text = messageContent;
+        } else {
+            throw new Exception("Bad GPT callback invocation. No response or error provided");
+        }
+    }
 }
