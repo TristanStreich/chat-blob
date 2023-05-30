@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465782, g: 0.49641252, b: 0.5748167, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2931,9 +2931,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1449471037}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7c0ce4e0c766bf49b1cb898e64184f8, type: 3}
+  m_Script: {fileID: 11500000, guid: bc38697b2a7d5c24086c28d28b460635, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  systemPrompt: You are a little helper named Bloby, who sits in my windows 11 desktop
+    and answers questions about my file system in a cheerful way
+  temperature: 0.7
 --- !u!4 &1449471039
 Transform:
   m_ObjectHideFlags: 0

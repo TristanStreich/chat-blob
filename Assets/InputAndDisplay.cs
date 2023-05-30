@@ -4,12 +4,15 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
-using static GptApi.ChatResponse;
+using GptApi;
 
 public class InputAndDisplay : MonoBehaviour
 {
     public static InputAndDisplay UIInput = null;
+
+    // these two vars probably belong in gpt manager
+    public int MessageLimit = 10;
+    public string startingMessage = "Hi Blobby!";
 
     public TMP_Text TextInput;
     public TMP_Text GPTTextDisplay;
@@ -26,22 +29,29 @@ public class InputAndDisplay : MonoBehaviour
         }
     }
 
+    public void Start() {
+        ChatLog.AddMessage(startingMessage);
+        GptClient.Chat(startingMessage, HandleGPTResponse);
+    }
+
     public void SendMessage()
     {
-        GptApi.gpt.Chat(TextInput.text, HandleGPTResponse);
+        ChatLog.AddMessage(TextInput.text);
+        List<Message> context = ChatLog.GetLog(MessageLimit);
+        GptClient.Chat(context, HandleGPTResponse);
         TextInput.text = "";
     }
 
 
-    private void HandleGPTResponse(GptApi.ChatResponse? response, string? error) {
-        var x = response.choices[0];
+    private void HandleGPTResponse(ChatResponse? response, string? error) {
         if (error != null) {
             Debug.LogError("Error: " + error);
             GPTTextDisplay.text = ("Error: " + error);
         } else if (response != null) {
-                string messageContent = response.choices[0].message.content;
-                Debug.Log(messageContent);
-                GPTTextDisplay.text = messageContent;
+                Message responseMessage = response.choices[0].message;
+                Debug.Log(responseMessage.content);
+                GPTTextDisplay.text = responseMessage.content;
+                ChatLog.AddMessage(responseMessage);
         } else {
             throw new Exception("Bad GPT callback invocation. No response or error provided");
         }
