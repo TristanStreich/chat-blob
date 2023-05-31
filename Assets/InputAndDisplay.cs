@@ -14,8 +14,11 @@ public class InputAndDisplay : MonoBehaviour
     public int MessageLimit = 10;
     public string startingMessage = "Hi Blobby!";
 
+    [Header("Visible Text and Input")]
     public TMP_InputField TextInput;
     public TMP_Text GPTTextDisplay;
+    
+    private VerticalLayoutGroup LayoutGroup;
 
     private void Awake()
     {
@@ -30,6 +33,7 @@ public class InputAndDisplay : MonoBehaviour
     }
 
     public void Start() {
+        LayoutGroup = FindObjectOfType<VerticalLayoutGroup>();
         ChatLog.AddMessage(startingMessage);
         GptClient.Chat(startingMessage, HandleGPTResponse);
     }
@@ -42,7 +46,11 @@ public class InputAndDisplay : MonoBehaviour
         TextInput.text = "";
     }
 
-
+    public void RefreshTextLayout() //we need this because the autosizer for text boxes is busted and needs to be reminded that it can change sizes
+    {
+        LayoutGroup.enabled = false;
+        LayoutGroup.enabled = true;
+    }
     private void HandleGPTResponse(ChatResponse? response, string? error) {
         if (error != null) {
             Debug.LogError("Error: " + error);
