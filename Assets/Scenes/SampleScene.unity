@@ -1059,7 +1059,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MessageLimit: 10
   startingMessage: Hi Blobby!
-  TextInput: {fileID: 469538955}
+  TextInput: {fileID: 1324064741}
   GPTTextDisplay: {fileID: 1740197283}
 --- !u!1 &581996758
 GameObject:

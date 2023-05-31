@@ -14,7 +14,7 @@ public class InputAndDisplay : MonoBehaviour
     public int MessageLimit = 10;
     public string startingMessage = "Hi Blobby!";
 
-    public TMP_Text TextInput;
+    public TMP_InputField TextInput;
     public TMP_Text GPTTextDisplay;
 
     private void Awake()
