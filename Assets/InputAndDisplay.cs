@@ -64,4 +64,10 @@ public class InputAndDisplay : MonoBehaviour
             throw new Exception("Bad GPT callback invocation. No response or error provided");
         }
     }
+    private void Update()
+    {
+        
+            if (Input.GetKeyUp(KeyCode.Return)) { SendMessage(); }
+        
+    }
 }
