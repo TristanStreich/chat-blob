@@ -44,6 +44,7 @@ public class InputAndDisplay : MonoBehaviour
         List<Message> context = ChatLog.GetLog(MessageLimit);
         GptClient.Chat(context, HandleGPTResponse);
         TextInput.text = "";
+        FaceController.FaceManager.ChangeFace("think");
     }
 
     public void RefreshTextLayout() //we need this because the autosizer for text boxes is busted and needs to be reminded that it can change sizes
@@ -57,7 +58,7 @@ public class InputAndDisplay : MonoBehaviour
             GPTTextDisplay.text = ("Error: " + error);
         } else if (response != null) {
                 Message responseMessage = response.choices[0].message;
-                Debug.Log(responseMessage.content);
+                //Debug.Log(responseMessage.content);
                 GPTTextDisplay.text = responseMessage.content;
                 ChatLog.AddMessage(responseMessage);
         } else {
