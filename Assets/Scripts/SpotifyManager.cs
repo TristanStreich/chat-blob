@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class SpotifyManager : MonoBehaviour
 {
+
+    public BlobSpriteRender spriteRender;
     
     // Start is called before the first frame update
     void Start()
     {
-        // Debug.Log(SpotifyClient.getIP());
         if (!SpotifyAuthClient.HasAccessToken()) {
             SpotifyAuthClient.startServer();
             Application.OpenURL(SpotifyAuthClient.login_url + "?" + QueryString());
@@ -17,7 +18,6 @@ public class SpotifyManager : MonoBehaviour
             Debug.Log("Token is Initialized!");
         }
 
-        // CheckPlaying();
 
         InvokeRepeating("CheckPlaying", 0f, 1f);
     }
@@ -40,7 +40,7 @@ public class SpotifyManager : MonoBehaviour
 
     void CheckPlaying() {
         SpotifyClient.IsPlayingMusic((is_playing) => {
-            Debug.Log("Is playing? " + is_playing);
+            spriteRender.PartyLikeNobodyIsWatching = is_playing;
         });
     }
 }

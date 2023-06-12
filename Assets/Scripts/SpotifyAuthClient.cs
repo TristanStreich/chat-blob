@@ -80,8 +80,11 @@ public static class SpotifyAuthClient {
         }
     }
 
+    /// Use refresh token to get new access token from spotify and save it
     public static async Task RefreshToken() {
-        
+        string refresh_token = getRefreshTokenFromFile();
+        TokenResponse response = await getAccessToken(null, refresh_token);
+        SaveToken(response);
     }
 
     // If this is false then we need to open the login window
