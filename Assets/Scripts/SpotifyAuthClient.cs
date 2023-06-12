@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 public static class SpotifyAuthClient {
 
-    private static string client_secret = SecretsManager.SpotifyClientSecret;
+    public static string client_secret = SecretsManager.SpotifyClientSecret;
     public static string client_id = "e6caa7be19934d19bc01701139e19df7";
     public static string client_auth = System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(client_id + ":" + client_secret));
 
@@ -58,11 +58,8 @@ public static class SpotifyAuthClient {
 
     public static async Task redirectRoute(HttpListenerRequest request) {
         string code = request.QueryString["code"];
-        Debug.Log(code);
         TokenResponse response = await getAccessToken(code, null);
 
-        Debug.Log("Callback");
-        Debug.Log(response);
         SaveToken(response);
         stopServer();
     }
@@ -130,7 +127,6 @@ public static class SpotifyAuthClient {
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadAsStringAsync();
-                Debug.Log($"Server responded with: {result}");
                 TokenResponse parsed =  JsonUtility.FromJson<TokenResponse>(result);
                 return parsed;
             }
@@ -190,7 +186,9 @@ public class SimpleHTTPServer
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex.Message);
+                if (!ex.Message.Contains("Listener closed")) {
+                    Debug.LogError(ex.Message);
+                }
                 return;
             }
         }

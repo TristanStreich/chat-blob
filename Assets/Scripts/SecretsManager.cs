@@ -85,12 +85,12 @@ public class SecretsManager : MonoBehaviour
                                ex is DirectoryNotFoundException)
         {
             getFromPopUp(secret);
-            return "Can't reach here";
+            return "NOTAKEY";
         }
 
     }
 
-    static string getPath(Secret secret) {
+    public static string getPath(Secret secret) {
         return SecretsDir + "/" + secret.ToString();
     }
 
@@ -108,6 +108,7 @@ public class SecretsManager : MonoBehaviour
     // this only happens once and this should be fine. Also just for dev purposes only.
     // The entire secrets manager needs to go
     static void getFromPopUp(Secret secret) {
+        Manager.button.onClick.RemoveAllListeners();
         Manager.button.onClick.AddListener(delegate() {
             string value = Manager.newTextInput.text;
             saveSecret(secret, value);

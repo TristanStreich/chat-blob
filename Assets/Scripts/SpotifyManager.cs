@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using UnityEngine;
+using System.IO;
 
 public class SpotifyManager : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class SpotifyManager : MonoBehaviour
     void Start()
     {
         if (!SpotifyAuthClient.HasAccessToken()) {
+            if (!File.Exists(SecretsManager.getPath(SecretsManager.Secret.spotify_client_secret))) {
+                return;
+            }
             SpotifyAuthClient.startServer();
             Application.OpenURL(SpotifyAuthClient.login_url + "?" + QueryString());
         } else {
