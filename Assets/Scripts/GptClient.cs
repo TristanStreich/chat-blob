@@ -10,7 +10,7 @@ using GptApi;
 
 public static class GptClient
 {
-    private static string OPENAI_API_KEY = File.ReadAllText(".api_key");
+    private static string OPENAI_API_KEY = SecretsManager.GPTAPIKey;  //File.ReadAllText(".api_key");
 
     public static string systemPrompt;
 
