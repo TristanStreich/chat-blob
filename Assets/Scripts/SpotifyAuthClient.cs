@@ -219,7 +219,8 @@ public class SimpleHTTPServer
             output.Write(buffer, 0, buffer.Length);
             output.Close();
         } else if (path == "/blobby/return") {
-            SpotifyAuthClient.redirectRoute(context.Request);
+            /// we do not need to await this async func its okay to run in background
+            _ = SpotifyAuthClient.redirectRoute(context.Request);
             var responseString = "Please Return to Game";
             var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
             context.Response.ContentLength64 = buffer.Length;

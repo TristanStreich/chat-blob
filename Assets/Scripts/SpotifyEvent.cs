@@ -15,8 +15,8 @@ public abstract class SpotifyEvent {
 
         public StartedPlaying(Track track, TrackAudioFeatures details)
         {
-            track = track;
-            details = details;
+            this.track = track;
+            this.details = details;
         }
     }
 
