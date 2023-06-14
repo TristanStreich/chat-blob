@@ -3,48 +3,66 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using UnityEngine;
 using System.IO;
+using SpotifyApi;
 
 public class SpotifyManager : MonoBehaviour
 {
 
-    public BlobSpriteRender spriteRender;
+    [Tooltip("How often we check spotify to see what is playing")]
+    public float PollPeriodSeconds = 1f;
+
+    private Track lastPlayed = null;
+    private TrackAudioFeatures lastPlayedDetails = null;
+    private bool isPlaying = false;
     
-    // Start is called before the first frame update
+
     void Start()
     {
         if (!SpotifyAuthClient.HasAccessToken()) {
+            // we need to prompt user for login
             if (!File.Exists(SecretsManager.getPath(SecretsManager.Secret.spotify_client_secret))) {
+                // we cannot init login until client secret
+                // has been provided in secrets manager pop up
                 return;
             }
-            SpotifyAuthClient.startServer();
-            Application.OpenURL(SpotifyAuthClient.login_url + "?" + QueryString());
-        } else {
-            Debug.Log("Token is Initialized!");
+            SpotifyAuthClient.initLogin();
         }
 
-
-        InvokeRepeating("CheckPlaying", 0f, 1f);
+        // start event emitter system
+        InvokeRepeating("UpdateCurrentlyPlaying", 0f, PollPeriodSeconds);
     }
 
-    string QueryString() {
-        NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
-        queryString.Add("response_type", "code");
-        queryString.Add("client_id", SpotifyAuthClient.client_id);
-        queryString.Add("scope", "user-read-playback-state user-top-read user-read-recently-played");
-        queryString.Add("redirect_uri", SpotifyAuthClient.redirect_uri);
+    /// system which polls spotify to find if a song is playing.
+    /// This will emit `StoppedPlaying` and `StartedPlaying` events on the 
+    /// `SpotifyEvent.Emitter` subscribe to that to get events
+    async void UpdateCurrentlyPlaying() {
+        Track? currTrack = await SpotifyClient.CurrentlyPlaying();
 
-        return queryString.ToString();
-    }
+        if (currTrack == null) {
+            // null means nothing playing
+            if (isPlaying) {
+                isPlaying = false;
+                SpotifyEvent.Emitter.Invoke(new SpotifyEvent.StoppedPlaying());
+            }
+            return;
+        } else if (currTrack == lastPlayed) {
+            // we are playing the same track as before
+            if (!isPlaying) {
+                // but we just unpaused
+                isPlaying = true;
+                SpotifyEvent.Emitter.Invoke(new SpotifyEvent.StartedPlaying(lastPlayed, lastPlayedDetails));
+            }
+            return;
+        } else {
+            // we are playing a song and we were not playing this song already
+            // we first need to get the details from spotify
+            TrackAudioFeatures currTrackDetails = await SpotifyClient.GetTrackDetails(currTrack);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+            SpotifyEvent.Emitter.Invoke(new SpotifyEvent.StartedPlaying(currTrack, currTrackDetails));
 
-    void CheckPlaying() {
-        SpotifyClient.IsPlayingMusic((is_playing) => {
-            spriteRender.PartyLikeNobodyIsWatching = is_playing;
-        });
+            isPlaying = true;
+            lastPlayed = currTrack;
+            lastPlayedDetails = currTrackDetails;
+        }
     }
 }

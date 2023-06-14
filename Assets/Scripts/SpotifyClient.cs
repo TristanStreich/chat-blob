@@ -63,6 +63,34 @@ public static class SpotifyClient {
         } catch {
             callback.Invoke(false);
         }
+    }
 
+    public static async Task<Track?> CurrentlyPlaying() {
+        string output = await MakeRequestWithRefresh("https://api.spotify.com/v1/me/player");
+
+        PlaybackResponse response;
+        try {
+            response = JsonUtility.FromJson<PlaybackResponse>(output);
+            if (response == null) {
+                return null;
+            }
+        } catch {
+            return null;
+        }
+
+        if (response.is_playing) {
+            return response.item;
+        } else {
+            return null;
+        }
+    }
+
+    public static async Task<TrackAudioFeatures?> GetTrackDetails(Track track) {
+        string output = await MakeRequestWithRefresh("https://api.spotify.com/v1/audio-features?ids=" + track.id);
+        try {
+            return JsonUtility.FromJson<TrackAudioFeatures>(output);
+        } catch {
+            return null;
+        }
     }
 }

@@ -34,6 +34,7 @@ public class BlobSpriteRender : MonoBehaviour
         spriteRenderer = FindObjectOfType<SpriteShapeRenderer>();
         hue = 0f; // Initial hue value (red)
         UpdateVerticies();
+        SpotifyEvent.Emitter.AddListener(spotifyListener);
     }
 
     private void Update()
@@ -117,6 +118,30 @@ public class BlobSpriteRender : MonoBehaviour
             spriteShape.spline.SetRightTangent(i, _newRt);
             spriteShape.spline.SetLeftTangent(i, _newLt);
 
+        }
+    }
+
+
+    /// Sets the dance type based on the track we are listening to
+    void setDanceParams(SpotifyApi.TrackAudioFeatures details) {
+        /// TODO:
+        /// I'm not sure what best to set here there are so many inputs we can play with
+    }
+
+
+    void spotifyListener(SpotifyEvent e) {
+        switch (e) {
+            case SpotifyEvent.StartedPlaying started:
+                SpotifyApi.Track track = started.track;
+                SpotifyApi.TrackAudioFeatures details = started.details;
+                
+                setDanceParams(details);
+
+                PartyLikeNobodyIsWatching = true;
+                break;
+            case SpotifyEvent.StoppedPlaying _:
+                PartyLikeNobodyIsWatching = false;
+                break;
         }
     }
 
