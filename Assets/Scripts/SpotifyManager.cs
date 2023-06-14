@@ -8,39 +8,29 @@ using SpotifyApi;
 public class SpotifyManager : MonoBehaviour
 {
 
+    [Tooltip("How often we check spotify to see what is playing")]
+    public float PollPeriodSeconds = 1f;
+
     private Track lastPlayed = null;
     private TrackAudioFeatures lastPlayedDetails = null;
     private bool isPlaying = false;
     
-    // Start is called before the first frame update
+
     void Start()
     {
         if (!SpotifyAuthClient.HasAccessToken()) {
+            // we need to prompt user for login
             if (!File.Exists(SecretsManager.getPath(SecretsManager.Secret.spotify_client_secret))) {
                 // we cannot init login until client secret
                 // has been provided in secrets manager pop up
                 return;
             }
-            // SpotifyAuthClient.startServer();
-            // Application.OpenURL(SpotifyAuthClient.login_url + "?" + QueryString());
             SpotifyAuthClient.initLogin();
-        } else {
-            Debug.Log("Token is Initialized!"); //TODO: remove
         }
 
-        InvokeRepeating("UpdateCurrentlyPlaying", 0f, 1f);
+        // start event emitter system
+        InvokeRepeating("UpdateCurrentlyPlaying", 0f, PollPeriodSeconds);
     }
-
-    // string QueryString() {
-    //     NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
-    //     queryString.Add("response_type", "code");
-    //     queryString.Add("client_id", SpotifyAuthClient.client_id);
-    //     queryString.Add("scope", "user-read-playback-state user-top-read user-read-recently-played");
-    //     queryString.Add("redirect_uri", SpotifyAuthClient.redirect_uri);
-
-    //     return queryString.ToString();
-    // }
-
 
     /// system which polls spotify to find if a song is playing.
     /// This will emit `StoppedPlaying` and `StartedPlaying` events on the 
@@ -68,9 +58,9 @@ public class SpotifyManager : MonoBehaviour
             // we first need to get the details from spotify
             TrackAudioFeatures currTrackDetails = await SpotifyClient.GetTrackDetails(currTrack);
 
-            isPlaying = true;
             SpotifyEvent.Emitter.Invoke(new SpotifyEvent.StartedPlaying(currTrack, currTrackDetails));
 
+            isPlaying = true;
             lastPlayed = currTrack;
             lastPlayedDetails = currTrackDetails;
         }
