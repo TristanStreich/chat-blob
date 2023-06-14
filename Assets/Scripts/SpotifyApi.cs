@@ -91,7 +91,46 @@ namespace SpotifyApi {
         public string type;
         public string uri;
         public bool is_local;
+        public override bool Equals(object obj) {
+            return obj is Track track && id == track.id;
+        }
+        public override int GetHashCode() {
+            return id?.GetHashCode() ?? 0;
+        }
+        public static bool operator ==(Track left, Track right) {
+            if (ReferenceEquals(left, null)) {
+                return ReferenceEquals(right, null);
+            }
+            return left.Equals(right);
+        }
+        public static bool operator !=(Track left, Track right) {
+            return !(left == right);
+        }
     }
+
+    [System.Serializable]
+    public class TrackAudioFeatures
+    {
+        public double acousticness;
+        public string analysis_url;
+        public double danceability;
+        public int duration_ms;
+        public double energy;
+        public string id;
+        public double instrumentalness;
+        public int key;
+        public double liveness;
+        public double loudness;
+        public int mode;
+        public double speechiness;
+        public double tempo;
+        public int time_signature;
+        public string track_href;
+        public string type;
+        public string uri;
+        public double valence;
+    }
+
 
     [System.Serializable]
     public class Album

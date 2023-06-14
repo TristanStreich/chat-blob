@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -33,6 +34,18 @@ public static class SpotifyAuthClient {
     /// TODO: find open port
     private static uint getPort() {
         return 4321;
+    }
+
+    public static void initLogin() {
+        startServer();
+
+        NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+        queryString.Add("response_type", "code");
+        queryString.Add("client_id", SpotifyAuthClient.client_id);
+        queryString.Add("scope", "user-read-playback-state user-top-read user-read-recently-played");
+        queryString.Add("redirect_uri", SpotifyAuthClient.redirect_uri);
+
+        Application.OpenURL(SpotifyAuthClient.login_url + "?" + queryString.ToString());
     }
 
 
