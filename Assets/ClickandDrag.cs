@@ -29,6 +29,8 @@ public class ClickandDrag : MonoBehaviour
         clickedRigidbody = GetComponent<Rigidbody2D>();
         clickedRigidbody.bodyType = RigidbodyType2D.Static;
 
+        PetBehavior.PetBehav.canMove = false;
+
         MakeDynamicBodiesStayDynamic();
     }
 
@@ -39,6 +41,8 @@ public class ClickandDrag : MonoBehaviour
 
         clickedRigidbody.bodyType = RigidbodyType2D.Dynamic;
         clickedRigidbody = null;
+
+        PetBehavior.PetBehav.canMove = true;
 
         MakeDynamicBodiesStayDynamic();
     }

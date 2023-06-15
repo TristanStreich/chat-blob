@@ -782,7 +782,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 184305537}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.31, y: -1.93, z: -0.000001}
+  m_LocalPosition: {x: 1.2, y: -2.14, z: -0.000001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 615271741}
@@ -1352,9 +1352,9 @@ MonoBehaviour:
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
-    - position: {x: 1.517303, y: 2.5232527, z: 0}
-      leftTangent: {x: -0.47331905, y: 0.45981646, z: 0}
-      rightTangent: {x: 0.31794262, y: -0.3088727, z: 0}
+    - position: {x: 1.29777, y: 2.46338, z: 0}
+      leftTangent: {x: -0.5420456, y: 0.3763628, z: 0}
+      rightTangent: {x: 0.61730576, y: -0.42861843, z: 0}
       mode: 1
       height: 1
       bevelCutoff: 0
@@ -1363,8 +1363,8 @@ MonoBehaviour:
       corner: 1
       m_CornerMode: 1
     - position: {x: 2.405542, y: -0.00890708, z: 0}
-      leftTangent: {x: -0.12956905, y: 1.2837219, z: 0}
-      rightTangent: {x: 0.09117222, y: -0.9033022, z: 0}
+      leftTangent: {x: 0.003417015, y: 1.1452351, z: 0}
+      rightTangent: {x: -0.0016918182, y: -0.56709874, z: 0}
       mode: 1
       height: 1
       bevelCutoff: 0
@@ -1373,8 +1373,8 @@ MonoBehaviour:
       corner: 1
       m_CornerMode: 1
     - position: {x: 1.5602403, y: -2.2278016, z: 0}
-      leftTangent: {x: 0.9978018, y: 0.62098217, z: 0}
-      rightTangent: {x: -0.6950388, y: -0.43255734, z: 0}
+      leftTangent: {x: 0.89801407, y: 0.7606851, z: 0}
+      rightTangent: {x: -0.62466145, y: -0.52913475, z: 0}
       mode: 1
       height: 1
       bevelCutoff: 0
@@ -1382,9 +1382,9 @@ MonoBehaviour:
       spriteIndex: 0
       corner: 1
       m_CornerMode: 1
-    - position: {x: -1.3579102, y: -2.1397326, z: 0}
+    - position: {x: -1.51757, y: -2.1397326, z: 0}
       leftTangent: {x: 0.6908145, y: -0.57430434, z: 0}
-      rightTangent: {x: -0.7045646, y: 0.5857352, z: 0}
+      rightTangent: {x: -0.7045646, y: 0.5857351, z: 0}
       mode: 1
       height: 1
       bevelCutoff: 0
@@ -1463,8 +1463,8 @@ SpriteShapeRenderer:
   - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
   - {fileID: 21300000, guid: 608e61deb05c54660bebf5a4dd2ee02d, type: 3}
   m_LocalAABB:
-    m_Center: {x: -0.055927753, y: 0.14308381, z: 0}
-    m_Extent: {x: 2.7585225, y: 2.953554, z: 0}
+    m_Center: {x: -0.07939863, y: 0.094112396, z: 0}
+    m_Extent: {x: 2.7350516, y: 2.9431007, z: 0}
 --- !u!4 &341059601
 Transform:
   m_ObjectHideFlags: 0
@@ -1678,7 +1678,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 408772372}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.25, y: 2.07, z: -0.000001}
+  m_LocalPosition: {x: 1.22, y: 2.16, z: -0.000001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 615271741}
@@ -2106,7 +2106,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 557267780}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2, y: 0, z: -0.000001}
+  m_LocalPosition: {x: 2.052, y: 0, z: -0.000001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 615271741}
@@ -2251,6 +2251,7 @@ GameObject:
   - component: {fileID: 615271737}
   - component: {fileID: 615271736}
   - component: {fileID: 615271735}
+  - component: {fileID: 615271742}
   m_Layer: 0
   m_Name: Blorbus
   m_TagString: Untagged
@@ -2265,7 +2266,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615271734}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 27f413fad238c5f4bb8ada87b3729fd0, type: 3}
   m_Name: 
@@ -2335,7 +2336,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 2.85
+  m_Radius: 8.34
 --- !u!58 &615271739
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2425,6 +2426,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &615271742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615271734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91e58b1245182d04abdd08961cedf968, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minSpeed: 2
+  maxSpeed: 5
+  sitStillFrequency: 0.8
+  minMoveTime: 0.8
+  maxMoveTime: 2
+  minSitTime: 1
+  maxSitTime: 3
+  jumpAtMouseChance: 0
+  jumpAtMouseForce: 110
+  jumpAtMouseCooldown: 3
+  canMove: 1
+  minJumpInterval: 2
+  maxJumpInterval: 5
+  minJumpPower: 90
+  maxJumpPower: 180
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2824,7 +2852,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d1a918bd5327d54fa92ef5e86c195e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRender: {fileID: 615271736}
+  PollPeriodSeconds: 1
 --- !u!1 &873850518
 GameObject:
   m_ObjectHideFlags: 0
@@ -3925,7 +3953,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1193326996}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.98, y: 2.14, z: -0.000001}
+  m_LocalPosition: {x: -1.11, y: 2.03, z: -0.000001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 615271741}
@@ -4052,7 +4080,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1270370481}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 24.85, y: -1.14, z: 0}
+  m_LocalPosition: {x: 29.27, y: -1.14, z: 0}
   m_LocalScale: {x: 18, y: 1, z: 1}
   m_Children:
   - {fileID: 1952995986}
@@ -5305,7 +5333,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1552242270}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.34, y: -1.84, z: -0.000001}
+  m_LocalPosition: {x: -1.11, y: -2.04, z: -0.000001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 615271741}
@@ -5517,9 +5545,9 @@ MonoBehaviour:
   onCharacterVisible:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InputAndDisplay, Assembly-CSharp
-        m_MethodName: RefreshTextLayout
+      - m_Target: {fileID: 615271742}
+        m_TargetAssemblyTypeName: PetBehavior, Assembly-CSharp
+        m_MethodName: CanMove
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
