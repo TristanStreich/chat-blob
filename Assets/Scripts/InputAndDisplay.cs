@@ -45,7 +45,7 @@ public class InputAndDisplay : MonoBehaviour
         GptClient.Chat(context, HandleGPTResponse);
         TextInput.text = "";
         FaceController.FaceManager.ChangeFace("think");
-        PetBehavior.PetBehav.canMove = false;
+        PetBehavior.PetBehav.canMove = false; //make blob sit still to think
     }
 
     public void RefreshTextLayout() //we need this because the autosizer for text boxes is busted and needs to be reminded that it can change sizes

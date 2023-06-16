@@ -28,7 +28,8 @@ public class PetBehavior : MonoBehaviour
     public float jumpAtMouseCooldown = 3f;
     private bool mouseNearby;
     [HideInInspector]
-    public bool canMove = true;
+    public bool canMove = true, isHeld = false;
+
 
     // Jump Variables
     [Header("Jumping")]
@@ -66,7 +67,7 @@ public class PetBehavior : MonoBehaviour
     void Update()
     {
         // Random Movement
-        if (canMove)
+        if (canMove && !isHeld)
         {
             currentMoveTime -= Time.deltaTime;
             if (currentMoveTime >= 0f)
@@ -89,26 +90,28 @@ public class PetBehavior : MonoBehaviour
                     currentSpeed = Random.Range(minSpeed, maxSpeed);
                 }
             }
+
+            // Random Jumps
+            jumpTimer -= Time.deltaTime;
+
+            if (jumpTimer <= 0f)
+            {
+                Jump();
+                ResetJumpTimer();
+                canMove = false;
+                StartCoroutine(EnableMovementAfterCooldown(jumpAtMouseCooldown));
+            }
+
+            // Mouse Interaction
+            if (mouseNearby && Random.value < jumpAtMouseChance)
+            {
+                JumpAtMouse();
+                canMove = false;
+                StartCoroutine(EnableMovementAfterCooldown(jumpAtMouseCooldown));
+            }
         }
 
-        // Random Jumps
-        jumpTimer -= Time.deltaTime;
-
-        if (jumpTimer <= 0f && canMove)
-        {
-            Jump();
-            ResetJumpTimer();
-            //canMove = false;
-            //StartCoroutine(EnableMovementAfterCooldown(jumpAtMouseCooldown));
-        }
-
-        // Mouse Interaction
-        if (mouseNearby && Random.value < jumpAtMouseChance && canMove)
-        {
-            JumpAtMouse();
-            canMove = false;
-            StartCoroutine(EnableMovementAfterCooldown(jumpAtMouseCooldown));
-        }
+        
     }
 
     void MoveRandom()

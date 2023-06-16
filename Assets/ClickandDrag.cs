@@ -5,7 +5,9 @@ using UnityEngine.EventSystems;
 
 public class ClickandDrag : MonoBehaviour
 {
-    private bool isDragging = false;
+    [HideInInspector]
+    public bool isDragging = false;
+
     private Vector2 previousMousePosition;
     private Rigidbody2D clickedRigidbody;
     private Rigidbody2D[] dynamicBodies;
@@ -22,27 +24,29 @@ public class ClickandDrag : MonoBehaviour
 
     private void OnMouseDown()
     {
-        //Debug.Log("Clicked");
+        Debug.Log("Clicked");
         isDragging = true;
+        
         previousMousePosition = GetMouseWorldPosition();
 
-        clickedRigidbody = GetComponent<Rigidbody2D>();
+        clickedRigidbody = GetComponentInParent<Rigidbody2D>();
         clickedRigidbody.bodyType = RigidbodyType2D.Static;
+        clickedRigidbody.position = previousMousePosition;
 
-        PetBehavior.PetBehav.canMove = false;
+        PetBehavior.PetBehav.isHeld = true;
 
         MakeDynamicBodiesStayDynamic();
     }
 
     private void OnMouseUp()
     {
-       // Debug.Log("letGo");
+        Debug.Log("letGo");
         isDragging = false;
 
         clickedRigidbody.bodyType = RigidbodyType2D.Dynamic;
         clickedRigidbody = null;
 
-        PetBehavior.PetBehav.canMove = true;
+        PetBehavior.PetBehav.isHeld = false;
 
         MakeDynamicBodiesStayDynamic();
     }
@@ -66,7 +70,9 @@ public class ClickandDrag : MonoBehaviour
             {
                 body.bodyType = RigidbodyType2D.Dynamic;
             }
+            else return;
         }
+
     }
 
     private Vector2 GetMouseWorldPosition()
