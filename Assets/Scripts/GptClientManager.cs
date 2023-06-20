@@ -29,6 +29,8 @@ public class GptClientManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GptEvent.Emitter.AddListener(ErrorLogger);
+
         prevTemp = temperature;
         prevSystemPrompt = systemPrompt;
         prevLimit = MessageLimit;
@@ -53,6 +55,24 @@ public class GptClientManager : MonoBehaviour
         if (MessageLimit != prevLimit) {
             prevLimit = MessageLimit;
             GptClient.MessageLimit = MessageLimit;
+        }
+    }
+
+
+    // Logs Error responses from gpt client to console.
+    //
+    // There is nothing else listening for errors atm so
+    // be careful removing this as no listeners means it
+    // will be hard to realize there is an error happening
+    // with gpt.
+    // 
+    // eventually we can build in error listeners for things
+    // like face changer and maybe give him X eyes or something
+    private void ErrorLogger(GptEvent e) {
+        switch (e) {
+            case GptEvent.Error error:
+                Debug.LogError(error.message);
+                break;
         }
     }
 }
