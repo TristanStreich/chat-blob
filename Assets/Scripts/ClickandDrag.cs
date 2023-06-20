@@ -9,12 +9,19 @@ public class ClickandDrag : MonoBehaviour
     public bool isDragging = false;
 
     private Vector2 previousMousePosition;
+    
+    [HideInInspector]
+    public Rigidbody2D[] dynamicBodies;
     private Rigidbody2D clickedRigidbody;
-    private Rigidbody2D[] dynamicBodies;
+    //private Rigidbody2D Blob;
+    private float speedThreshold =45f;
+
+
 
     private void Start()
     {
         GameObject[] bodyObjects = GameObject.FindGameObjectsWithTag("body");
+        //Blob = GameObject.FindGameObjectWithTag("Blob").GetComponent<Rigidbody2D>();
         dynamicBodies = new Rigidbody2D[bodyObjects.Length];
         for (int i = 0; i < bodyObjects.Length; i++)
         {
@@ -24,14 +31,16 @@ public class ClickandDrag : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Debug.Log("Clicked");
+        //Debug.Log("Clicked");
         isDragging = true;
         
         previousMousePosition = GetMouseWorldPosition();
 
         clickedRigidbody = GetComponentInParent<Rigidbody2D>();
         clickedRigidbody.bodyType = RigidbodyType2D.Static;
-        clickedRigidbody.position = previousMousePosition;
+        clickedRigidbody.position = GetMouseWorldPosition();
+        
+        Cursor.visible = false;
 
         PetBehavior.PetBehav.isHeld = true;
 
@@ -40,15 +49,20 @@ public class ClickandDrag : MonoBehaviour
 
     private void OnMouseUp()
     {
-        Debug.Log("letGo");
-        isDragging = false;
+        //Debug.Log("letGo");
+        if (isDragging)
+        {
+            clickedRigidbody.bodyType = RigidbodyType2D.Dynamic;
+            clickedRigidbody = null;
 
-        clickedRigidbody.bodyType = RigidbodyType2D.Dynamic;
-        clickedRigidbody = null;
+            isDragging = false;
 
-        PetBehavior.PetBehav.isHeld = false;
+            Cursor.visible = true; //this is because the mouse is faster than the updated following render
 
-        MakeDynamicBodiesStayDynamic();
+            PetBehavior.PetBehav.isHeld = false;
+
+            MakeDynamicBodiesStayDynamic();
+        } 
     }
 
     private void OnMouseDrag()
@@ -56,10 +70,35 @@ public class ClickandDrag : MonoBehaviour
         if (isDragging)
         {
             Vector2 currentMousePosition = GetMouseWorldPosition();
-            Vector2 displacement = currentMousePosition - previousMousePosition;
-            transform.position += (Vector3)displacement;
+            Vector2 mouseDelta = currentMousePosition - previousMousePosition;
             previousMousePosition = currentMousePosition;
+
+            clickedRigidbody.position = GetMouseWorldPosition();
+
+            float currentSpeed = mouseDelta.magnitude / Time.deltaTime;
+            if (currentSpeed >= speedThreshold)
+            {
+                TooFast();
+            }
         }
+    }
+    
+
+    private void TooFast()
+    {
+        Debug.Log("Escaped!");
+        // Add particles and extra sounds when we get to it
+        clickedRigidbody.bodyType = RigidbodyType2D.Dynamic;
+        clickedRigidbody = null;
+
+        isDragging = false;
+
+        Cursor.visible = true; //this is because the mouse is faster than the updated following render
+
+        PetBehavior.PetBehav.isHeld = false;
+
+         MakeDynamicBodiesStayDynamic();
+        
     }
 
     private void MakeDynamicBodiesStayDynamic()
