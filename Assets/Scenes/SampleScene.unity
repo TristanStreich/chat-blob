@@ -1809,8 +1809,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68637968eb62309458494b51da1967f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MessageLimit: 10
-  startingMessage: Hi Blobby!
   TextInput: {fileID: 1324064741}
   GPTTextDisplay: {fileID: 718484566}
 --- !u!1 &557267780
@@ -2325,7 +2323,7 @@ MonoBehaviour:
   maxMoveTime: 2
   minSitTime: 1
   maxSitTime: 3
-  jumpAtMouseChance: 0
+  jumpAtMouseChance: 0.001
   jumpAtMouseForce: 110
   jumpAtMouseCooldown: 3
   canMove: 1
@@ -4617,9 +4615,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc38697b2a7d5c24086c28d28b460635, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  temperature: 0.7
+  MessageLimit: 10
+  StartingMessage: Hi Blobby!
   systemPrompt: You are a little helper named Bloby, who sits in my windows 11 desktop
     and answers questions about my file system in a cheerful way
-  temperature: 0.7
 --- !u!4 &1449471039
 Transform:
   m_ObjectHideFlags: 0

@@ -9,6 +9,17 @@ public class FaceController : MonoBehaviour
     {
     public static FaceController FaceManager = null;
 
+    public enum Expressions{
+        Happy,
+        Thinking,
+        Confused,
+        Dizzy,
+        Shocked,
+        Tired,
+        Asleep,
+        Eating
+    }
+
     public GameObject[] eyes;
     public GameObject Mouth;
     public float mouthOffset = 1f; // Distance between the lowest eye and the mouth
@@ -54,34 +65,54 @@ public class FaceController : MonoBehaviour
         // Move the mouth to the target position
         Mouth.transform.position = targetPosition;
     }
-    public void ChangeFace(string Expression)
+    public void ChangeFace(Expressions Expression)
     {
-        if (Expression.ToLower() == "happy")
+        switch (Expression)
         {
-            for (int i = 0; i < eyes.Length; i++)
-            {
-                eyes[i].GetComponent<Animator>().Play("EyeHappy");
-                Debug.Log("happy");
-            }
-        }
+            default:
+            case Expressions.Happy:
+                for (int i = 0; i < eyes.Length; i++)
+                {
+                    eyes[i].GetComponent<Animator>().Play("EyeHappy");
+                    Debug.Log("happy");
+                }
+                break;
+            case Expressions.Thinking:
+                for (int i = 0; i < eyes.Length; i++)
+                {
+                    eyes[i].GetComponent<Animator>().Play("EyeThink");
+                    Debug.Log("thinking");
+                }
+                break;
+            case Expressions.Confused:
+                Debug.Log("confused");                
+                break;
+            case Expressions.Dizzy:
+                Debug.Log("dizzy");                
+                break;
+            case Expressions.Shocked:
+                Debug.Log("shocked");                
+                break;
+            case Expressions.Tired:                                                  
+                Debug.Log("tired");                
+                break;
+            case Expressions.Asleep:               
+                Debug.Log("asleep");                
+                break;
+            case Expressions.Eating:                
+                Debug.Log("eating");                
+                break;
 
-        if (Expression.ToLower() == "think")
-        {
-            for (int i = 0; i < eyes.Length; i++)
-            {
-                eyes[i].GetComponent<Animator>().Play("EyeThink");
-                Debug.Log("thinking");
-            }
         }
     }
 
     private void GptEventListener(GptEvent e) {
         switch (e) {
             case GptEvent.RequestSent _:
-                ChangeFace("think");
+                ChangeFace(Expressions.Thinking);
                 break;
             case GptEvent.ResponseRecieved _:
-                ChangeFace("happy");
+                ChangeFace(Expressions.Happy);
                 break;
         }
     }
