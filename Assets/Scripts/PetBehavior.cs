@@ -178,6 +178,19 @@ public class PetBehavior : MonoBehaviour
     {
         canMove = true;
     }
+
+    
+    private void GptEventListener(GptEvent e) {
+        switch (e) {
+            case GptEvent.RequestSent _:
+                canMove = false;
+                break;
+            case GptEvent.ResponseRecieved _:
+                canMove = true;
+                break;
+        }
+    }
+
 }
 
     

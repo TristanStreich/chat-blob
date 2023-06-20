@@ -25,6 +25,10 @@ public class FaceController : MonoBehaviour
         }
     }
 
+    private void Start() {
+        GptEvent.Emitter.AddListener(GptEventListener);
+    }
+
     private void Update()
     {
         calcEyePos();
@@ -68,6 +72,17 @@ public class FaceController : MonoBehaviour
                 eyes[i].GetComponent<Animator>().Play("EyeThink");
                 Debug.Log("thinking");
             }
+        }
+    }
+
+    private void GptEventListener(GptEvent e) {
+        switch (e) {
+            case GptEvent.RequestSent _:
+                ChangeFace("think");
+                break;
+            case GptEvent.ResponseRecieved _:
+                ChangeFace("happy");
+                break;
         }
     }
 

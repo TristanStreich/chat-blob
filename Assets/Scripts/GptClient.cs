@@ -14,6 +14,8 @@ public static class GptClient
 
     public static string systemPrompt;
 
+    public static int MessageLimit;
+
     public static float temperature;
 
     /// <summary>
@@ -111,6 +113,23 @@ public static class GptClient
     /// <param name="callback">The callback function to execute when the response is received.</param>
     public static void Chat(List<Message> messages, ChatCallBack callback) {
         sendRequest(messages, callback);
+    }
+
+
+    public static void newChat(string message) {
+
+        ChatLog.AddMessage(Message.User(message));
+        List<Message> messages = ChatLog.GetLog(MessageLimit);
+        GptEvent.Emitter.Invoke(new GptEvent.RequestSent());
+
+        sendRequest(messages, (response, error) => {
+            if (error != null) {
+                GptEvent.Emitter.Invoke(new GptEvent.Error(error));
+            } else {
+                ChatLog.AddMessage(response.choices[0].message);
+                GptEvent.Emitter.Invoke(new GptEvent.ResponseRecieved(response));
+            }
+        });
     }
 
     private static void defaultCallBack(ChatResponse? response, String? error) {

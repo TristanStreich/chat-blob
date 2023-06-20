@@ -33,19 +33,18 @@ public class InputAndDisplay : MonoBehaviour
     }
 
     public void Start() {
+        GptEvent.Emitter.AddListener(GptEventListener);
+
         LayoutGroup = FindObjectOfType<VerticalLayoutGroup>();
-        ChatLog.AddMessage(startingMessage);
-        GptClient.Chat(startingMessage, HandleGPTResponse);
+        // GptClient.newChat(startingMessage); //, HandleGPTResponse);
     }
 
     public void SendMessage()
     {
-        ChatLog.AddMessage(TextInput.text);
-        List<Message> context = ChatLog.GetLog(MessageLimit);
-        GptClient.Chat(context, HandleGPTResponse);
+        GptClient.newChat(TextInput.text);
         TextInput.text = "";
-        FaceController.FaceManager.ChangeFace("think");
-        PetBehavior.PetBehav.canMove = false; //make blob sit still to think
+        // FaceController.FaceManager.ChangeFace("think");
+        // PetBehavior.PetBehav.canMove = false; //make blob sit still to think
     }
 
     public void RefreshTextLayout() //we need this because the autosizer for text boxes is busted and needs to be reminded that it can change sizes
@@ -53,23 +52,36 @@ public class InputAndDisplay : MonoBehaviour
         LayoutGroup.enabled = false;
         LayoutGroup.enabled = true;
     }
-    private void HandleGPTResponse(ChatResponse? response, string? error) {
-        if (error != null) {
-            Debug.LogError("Error: " + error);
-            GPTTextDisplay.text = ("Error: " + error);
-        } else if (response != null) {
-                Message responseMessage = response.choices[0].message;
-                //Debug.Log(responseMessage.content);
-                GPTTextDisplay.text = responseMessage.content;
-                ChatLog.AddMessage(responseMessage);
-        } else {
-            throw new Exception("Bad GPT callback invocation. No response or error provided");
-        }
-    }
+    // private void HandleGPTResponse(ChatResponse? response, string? error) {
+    //     if (error != null) {
+    //         Debug.LogError("Error: " + error);
+    //         GPTTextDisplay.text = ("Error: " + error);
+    //     } else if (response != null) {
+    //             Message responseMessage = response.choices[0].message;
+    //             Debug.Log(responseMessage.content);
+    //             GPTTextDisplay.text = responseMessage.content;
+    //             ChatLog.AddMessage(responseMessage);
+    //     } else {
+    //         throw new Exception("Bad GPT callback invocation. No response or error provided");
+    //     }
+    // }
     private void Update()
     {
         
             if (Input.GetKeyUp(KeyCode.Return)) { SendMessage(); }
         
+    }
+
+
+    private void GptEventListener(GptEvent e) {
+        switch (e) {
+            case GptEvent.ResponseRecieved received:
+                ChatResponse response = received.response;
+                Message responseMessage = response.choices[0].message;
+                // Debug.Log(responseMessage.content);
+                GPTTextDisplay.text = responseMessage.content;
+                ChatLog.AddMessage(responseMessage);
+                break;
+        }
     }
 }

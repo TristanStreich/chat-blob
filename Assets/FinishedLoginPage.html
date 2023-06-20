@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: #d2b880;
+            text-align: center;
+            font-family: 'Comic Sans MS', sans-serif;
+        }
+
+        .blob-image {
+            position: relative;
+            top: -175px;
+        }
+
+        img {
+            max-width: 500px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <svg width="800" height="300">
+            <path id="curve1"
+                d="M 100,150 Q 400,50 700,150"
+                fill="transparent"
+            />
+            <path id="curve2"
+                d="M 100,200 Q 400,100 700,200"
+                fill="transparent"
+            />
+            <text font-size="36px"  fill = #05752e>
+                <textPath xlink:href="#curve1" startOffset="15%">
+                    Authentication Complete!
+                </textPath>
+                <textPath xlink:href="#curve2">
+                    Please close this and return to game.
+                </textPath>
+            </text>
+        </svg>
+    </div>
+    <div>
+        <img src="https://upload.wikimedia.org/wikipedia/en/2/2d/SSU_Kirby_artwork.png" alt="Image" class="blob-image">
+    </div>
+</body>
+</html>

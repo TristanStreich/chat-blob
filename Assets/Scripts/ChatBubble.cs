@@ -11,12 +11,16 @@ public class ChatBubble : MonoBehaviour
     {
         WordBubble = transform.Find("Bkrnd").GetComponent<SpriteRenderer>();
         textMeshPro = transform.Find("BlobText").GetComponent<TextMeshPro>();
+        SetUp("*blob sound*");
+    }
+
+    private void Start() {
+        GptEvent.Emitter.AddListener(GptEventListener);
     }
 
     // Update is called once per frame
     void Update()
     {
-        SetUp("*blob sound*");
     }
 
     private void SetUp(string input)
@@ -30,5 +34,15 @@ public class ChatBubble : MonoBehaviour
 
         Vector3 offset = new Vector3(0, 0); //Only change offset if we want extra elements to share the space of the word bubble
         //WordBubble.transform.localPosition = new Vector3(WordBubble.size.x/2f , 0f) + offset;
+    }
+
+
+    private void GptEventListener(GptEvent e) {
+        switch (e) {
+            case GptEvent.ResponseRecieved received:
+                string message = received.response.choices[0].message.content;
+                SetUp(message);
+                break;
+        }
     }
 }
