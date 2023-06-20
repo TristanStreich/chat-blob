@@ -36,7 +36,7 @@ public class GptClientManager : MonoBehaviour
         GptClient.temperature = temperature;
         GptClient.MessageLimit = MessageLimit;
 
-        GptClient.newChat(StartingMessage);
+        GptClient.Chat(StartingMessage);
     }
 
     // Update is called once per frame

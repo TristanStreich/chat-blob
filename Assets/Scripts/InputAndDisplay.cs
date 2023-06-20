@@ -36,12 +36,12 @@ public class InputAndDisplay : MonoBehaviour
         GptEvent.Emitter.AddListener(GptEventListener);
 
         LayoutGroup = FindObjectOfType<VerticalLayoutGroup>();
-        // GptClient.newChat(startingMessage); //, HandleGPTResponse);
+        // GptClient.Chat(startingMessage); //, HandleGPTResponse);
     }
 
     public void SendMessage()
     {
-        GptClient.newChat(TextInput.text);
+        GptClient.Chat(TextInput.text);
         TextInput.text = "";
         // FaceController.FaceManager.ChangeFace("think");
         // PetBehavior.PetBehav.canMove = false; //make blob sit still to think
