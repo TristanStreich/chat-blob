@@ -10,10 +10,6 @@ public class InputAndDisplay : MonoBehaviour
 {
     public static InputAndDisplay UIInput = null;
 
-    // these two vars probably belong in gpt manager
-    public int MessageLimit = 10;
-    public string startingMessage = "Hi Blobby!";
-
     [Header("Visible Text and Input")]
     public TMP_InputField TextInput;
     public TMP_Text GPTTextDisplay;
@@ -33,7 +29,7 @@ public class InputAndDisplay : MonoBehaviour
     }
 
     public void Start() {
-        GptEvent.Emitter.AddListener(GptEventListener);
+        // GptEvent.Emitter.AddListener(GptEventListener);
 
         LayoutGroup = FindObjectOfType<VerticalLayoutGroup>();
         // GptClient.Chat(startingMessage); //, HandleGPTResponse);
@@ -73,15 +69,13 @@ public class InputAndDisplay : MonoBehaviour
     }
 
 
-    private void GptEventListener(GptEvent e) {
-        switch (e) {
-            case GptEvent.ResponseRecieved received:
-                ChatResponse response = received.response;
-                Message responseMessage = response.choices[0].message;
-                // Debug.Log(responseMessage.content);
-                GPTTextDisplay.text = responseMessage.content;
-                ChatLog.AddMessage(responseMessage);
-                break;
-        }
-    }
+    // private void GptEventListener(GptEvent e) {
+    //     switch (e) {
+    //         case GptEvent.ResponseRecieved received:
+    //             ChatResponse response = received.response;
+    //             Message responseMessage = response.choices[0].message;
+    //             GPTTextDisplay.text = responseMessage.content;
+    //             break;
+    //     }
+    // }
 }
