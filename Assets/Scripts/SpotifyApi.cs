@@ -123,7 +123,7 @@ namespace SpotifyApi {
         public double loudness;
         public int mode;
         public double speechiness;
-        public double tempo;
+        public float tempo;
         public int time_signature;
         public string track_href;
         public string type;

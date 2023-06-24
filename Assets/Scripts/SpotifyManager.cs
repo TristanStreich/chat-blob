@@ -11,9 +11,14 @@ public class SpotifyManager : MonoBehaviour
     [Tooltip("How often we check spotify to see what is playing")]
     public float PollPeriodSeconds = 1f;
 
+    [Tooltip("How often blobby should comment on spotify songs")]
+    public float SpotifyChatCooldownSeconds = 30f;
+
     private Track lastPlayed = null;
     private TrackAudioFeatures lastPlayedDetails = null;
     private bool isPlaying = false;
+
+    private bool recentlyPlayed = false;
     
 
     void Start()
@@ -28,8 +33,15 @@ public class SpotifyManager : MonoBehaviour
             SpotifyAuthClient.initLogin();
         }
 
+        SpotifyEvent.Emitter.AddListener(spotifyEventListener);
+
         // start event emitter system
         InvokeRepeating("UpdateCurrentlyPlaying", 0f, PollPeriodSeconds);
+        InvokeRepeating("RefreshRecentlyPlayed", 0f, SpotifyChatCooldownSeconds);
+    }
+
+    async void RefreshRecentlyPlayed() {
+        recentlyPlayed = false;
     }
 
     /// system which polls spotify to find if a song is playing.
@@ -63,6 +75,20 @@ public class SpotifyManager : MonoBehaviour
             isPlaying = true;
             lastPlayed = currTrack;
             lastPlayedDetails = currTrackDetails;
+        }
+    }
+
+    void spotifyEventListener(SpotifyEvent e) {
+        switch (e) {
+            case SpotifyEvent.StartedPlaying startedPlayingEvent:
+                if (recentlyPlayed) break;
+                string songName = startedPlayingEvent.track.name;
+                string artistName = startedPlayingEvent.track.artists[0].name;
+
+                string message = $"User started playing song \"{songName}\" by \"{artistName}\"";
+                GptClient.Event(message);
+                recentlyPlayed = true;
+                break;
         }
     }
 }

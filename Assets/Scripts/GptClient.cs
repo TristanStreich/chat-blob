@@ -82,6 +82,15 @@ public static class GptClient
     }
 
     /// <summary>
+    /// Sends a message to gpt about a system event that it should respond to
+    /// </summary>
+    public static void Event(string message) {
+
+        string eventMessage = $"EVENT\n{message}";
+        Chat(eventMessage);
+    }
+
+    /// <summary>
     /// Function that will be called after the response from gpt is received.
     /// If there was an error while sending it will be in the string as the second arg
     /// </summary>

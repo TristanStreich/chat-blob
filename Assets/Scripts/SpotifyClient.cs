@@ -68,6 +68,8 @@ public static class SpotifyClient {
     public static async Task<Track?> CurrentlyPlaying() {
         string output = await MakeRequestWithRefresh("https://api.spotify.com/v1/me/player");
 
+        // Debug.Log(output);
+
         PlaybackResponse response;
         try {
             response = JsonUtility.FromJson<PlaybackResponse>(output);
@@ -86,7 +88,7 @@ public static class SpotifyClient {
     }
 
     public static async Task<TrackAudioFeatures?> GetTrackDetails(Track track) {
-        string output = await MakeRequestWithRefresh("https://api.spotify.com/v1/audio-features?ids=" + track.id);
+        string output = await MakeRequestWithRefresh("https://api.spotify.com/v1/audio-features/" + track.id);
         try {
             return JsonUtility.FromJson<TrackAudioFeatures>(output);
         } catch {

@@ -57,6 +57,12 @@ public class BlobSpriteRender : MonoBehaviour
                 {
                     // Update the offset for the current vertex
                     vertexOffsets[i] = Random.Range(-DanceAmount, DanceAmount);
+
+                    // Convert the hue value to RGB color
+                    Color newColor = Color.HSVToRGB(hue, 1f, 1f);
+
+                    // Assign the new color to the Sprite Shape Renderer
+                    spriteRenderer.color = newColor;
                 }
                 timer = DanceSpeed;
             }
@@ -80,11 +86,11 @@ public class BlobSpriteRender : MonoBehaviour
         if (hue > 1f)
             hue -= 1f;
 
-        // Convert the hue value to RGB color
-        Color newColor = Color.HSVToRGB(hue, 1f, 1f);
+        // // Convert the hue value to RGB color
+        // Color newColor = Color.HSVToRGB(hue, 1f, 1f);
 
-        // Assign the new color to the Sprite Shape Renderer
-        spriteRenderer.color = newColor;
+        // // Assign the new color to the Sprite Shape Renderer
+        // spriteRenderer.color = newColor;
     }
 
     private void UpdateVerticies()
@@ -126,6 +132,12 @@ public class BlobSpriteRender : MonoBehaviour
     void setDanceParams(SpotifyApi.TrackAudioFeatures details) {
         /// TODO:
         /// I'm not sure what best to set here there are so many inputs we can play with
+
+        Debug.Log($"Temp: {details.tempo}");
+
+        DanceSpeed = 1.0f / (details.tempo / 60.0f);
+
+        Debug.Log($"Dance Speed: {DanceSpeed}");
     }
 
 
