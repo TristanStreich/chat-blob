@@ -40,7 +40,7 @@ public class SpotifyManager : MonoBehaviour
         InvokeRepeating("RefreshRecentlyPlayed", 0f, SpotifyChatCooldownSeconds);
     }
 
-    async void RefreshRecentlyPlayed() {
+    void RefreshRecentlyPlayed() {
         recentlyPlayed = false;
     }
 

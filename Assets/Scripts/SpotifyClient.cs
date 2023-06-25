@@ -40,7 +40,7 @@ public static class SpotifyClient {
     private static async Task<HttpResponseMessage> MakeSingleRequest(string url) {
         string access_token = SpotifyAuthClient.getAccessTokenFromFile();
 
-        using (var httpClient = new HttpClient())
+        using (var httpClient = new HttpClient()) // TODO probaly dont create a new client with each request :facepalm:
         {
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "Bearer " + access_token);
             return await httpClient.GetAsync(url);
@@ -80,6 +80,11 @@ public static class SpotifyClient {
             return null;
         }
 
+        if (response.currently_playing_type == "unknown") {
+            Debug.LogWarning($"Found unknown playing type. Repolling. {output}");
+            return await CurrentlyPlaying();
+        }
+
         if (response.is_playing) {
             return response.item;
         } else {
@@ -89,10 +94,6 @@ public static class SpotifyClient {
 
     public static async Task<TrackAudioFeatures?> GetTrackDetails(Track track) {
         string output = await MakeRequestWithRefresh("https://api.spotify.com/v1/audio-features/" + track.id);
-        try {
-            return JsonUtility.FromJson<TrackAudioFeatures>(output);
-        } catch {
-            return null;
-        }
+        return JsonUtility.FromJson<TrackAudioFeatures>(output);
     }
 }
