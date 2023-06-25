@@ -2323,7 +2323,7 @@ MonoBehaviour:
   maxMoveTime: 2
   minSitTime: 1
   maxSitTime: 3
-  jumpAtMouseChance: 0
+  jumpAtMouseChance: 0.001
   jumpAtMouseForce: 110
   jumpAtMouseCooldown: 3
   canMove: 1
