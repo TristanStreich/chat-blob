@@ -7,6 +7,10 @@ public class ChatBubble : MonoBehaviour
 {
     private SpriteRenderer WordBubble;
     private TextMeshPro textMeshPro;
+    public Transform targetTransform;
+    public float minDistance = 3f; // Minimum distance required to move the chat bubble
+    public float movementSpeed = 5f;
+
     private void Awake()
     {
         WordBubble = transform.Find("Bkrnd").GetComponent<SpriteRenderer>();
@@ -21,6 +25,15 @@ public class ChatBubble : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Calculate the distance between the chat bubble and the target transform
+        float distance = Vector3.Distance(transform.position, targetTransform.position);
+
+        // Check if the distance is greater than the minimum distance
+        if (distance > minDistance)
+        {
+            // Move the chat bubble towards the target transform
+            transform.position = Vector3.MoveTowards(transform.position, targetTransform.position, Time.deltaTime * movementSpeed);
+        }
     }
 
     private void SetUp(string input)

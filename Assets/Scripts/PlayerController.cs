@@ -5,9 +5,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
-    public float moveSpeed = 5f;
-    public float jumpVelocity = 5f;
-    public float jumpCooldown = 0.2f;
+    public float moveSpeed = 9f;
+    public float jumpVelocity = 140f;
+    public float jumpCooldown = 0.4f;
     public bool isJumping = false;
     private float jumpCooldownTimer = 0f;
 
