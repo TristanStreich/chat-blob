@@ -6,5 +6,5 @@ Home of Blobby! The cute desktop pet!
 * GPT
 * Spotify
 
-### Upcoming Integratoins
+### Upcoming Integrations
 * Steam
