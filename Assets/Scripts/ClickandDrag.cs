@@ -14,19 +14,47 @@ public class ClickandDrag : MonoBehaviour
     public Rigidbody2D[] dynamicBodies;
     private Rigidbody2D clickedRigidbody;
     //private Rigidbody2D Blob;
-    private float speedThreshold =45f;
+    private float mouseSpeedThreshold =45f;
+    private float bodySpeedThreshold = 20f;
+    private float distanceThreshold = 100f; // Distance threshold from the screen edges
+    private float bottomDistanceThreshold = 200f; // Distance threshold from the screen bottom specififcally
 
+    public Rigidbody2D MainBody;
 
 
     private void Start()
     {
-        GameObject[] bodyObjects = GameObject.FindGameObjectsWithTag("body");
-        //Blob = GameObject.FindGameObjectWithTag("Blob").GetComponent<Rigidbody2D>();
+        GameObject[] bodyObjects = GameObject.FindGameObjectsWithTag("Body");
         dynamicBodies = new Rigidbody2D[bodyObjects.Length];
         for (int i = 0; i < bodyObjects.Length; i++)
         {
             dynamicBodies[i] = bodyObjects[i].GetComponent<Rigidbody2D>();
         }
+    }
+
+    private void Update()
+    {
+        if(isDragging)
+        {
+            if (MainBody.velocity.magnitude >= bodySpeedThreshold)
+            {
+                TooFast();
+                Debug.Log("The boy escaped");
+            }
+            // Get the mouse position in screen coordinates
+            Vector3 mousePosition = Input.mousePosition;
+
+            // Check if the mouse position is within the distance threshold from the screen edges
+            if (mousePosition.x <= distanceThreshold ||
+                mousePosition.x >= Screen.width - distanceThreshold ||
+                mousePosition.y <= bottomDistanceThreshold ||
+                mousePosition.y >= Screen.height - distanceThreshold)
+            {
+                TooFast();
+                Debug.Log("I cant let you drag past the edges!");
+            }
+        }
+        
     }
 
     private void OnMouseDown()
@@ -65,6 +93,8 @@ public class ClickandDrag : MonoBehaviour
         } 
     }
 
+
+
     private void OnMouseDrag()
     {
         if (isDragging)
@@ -76,17 +106,16 @@ public class ClickandDrag : MonoBehaviour
             clickedRigidbody.position = GetMouseWorldPosition();
 
             float currentSpeed = mouseDelta.magnitude / Time.deltaTime;
-            if (currentSpeed >= speedThreshold)
+            if (currentSpeed >= mouseSpeedThreshold)
             {
                 TooFast();
+                Debug.Log("Mouse too Fast!");
             }
         }
     }
-    
-
-    private void TooFast()
+    public void TooFast()
     {
-        Debug.Log("Escaped!");
+        //Debug.Log("Escaped!");
         // Add particles and extra sounds when we get to it
         clickedRigidbody.bodyType = RigidbodyType2D.Dynamic;
         clickedRigidbody = null;

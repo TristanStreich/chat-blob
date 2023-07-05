@@ -28,10 +28,11 @@ public class InputAndDisplay : MonoBehaviour
         }
     }
 
-    public void Start() {
+    public void Start()
+    {
         LayoutGroup = FindObjectOfType<VerticalLayoutGroup>();
     }
-
+    
     public void SendMessage()
     {
         GptClient.Chat(TextInput.text);
@@ -45,8 +46,7 @@ public class InputAndDisplay : MonoBehaviour
     }
     private void Update()
     {
-        
-            if (Input.GetKeyUp(KeyCode.Return)) { SendMessage(); }
+        if (Input.GetKeyUp(KeyCode.Return)) { SendMessage(); }
         
     }
 }
