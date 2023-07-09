@@ -42,8 +42,12 @@ public class PetBehavior : MonoBehaviour
     public float maxJumpPower = 10f;
     private float jumpTimer;
     private float jumpPower;
+    private bool grounded;
+    public Transform groundCheck;
+    public float raycastDistance = 0.5f;
+    public LayerMask groundLayer;
 
-    
+
     private enum movementStates
     {
         Awake,
@@ -53,7 +57,7 @@ public class PetBehavior : MonoBehaviour
     }
     private movementStates currentState = movementStates.Awake;
 
-    private Rigidbody2D rb;
+    public Rigidbody2D[] rb;
 
     private void Awake()
     {
@@ -69,7 +73,6 @@ public class PetBehavior : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
         currentMoveTime = UnityEngine.Random.Range(minMoveTime, maxMoveTime);
         currentSitTime = UnityEngine.Random.Range(minSitTime,maxSitTime);
         currentSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
@@ -81,9 +84,10 @@ public class PetBehavior : MonoBehaviour
     {
 
         ReadWorlTime();
+        GroundCheck();
 
         // Random Movement
-        if (canMove && !isHeld)
+        if (canMove && !isHeld && grounded)
         {
             currentMoveTime -= Time.deltaTime;
             if (currentMoveTime >= 0f)
@@ -110,7 +114,7 @@ public class PetBehavior : MonoBehaviour
             // Random Jumps
             jumpTimer -= Time.deltaTime;
 
-            if (jumpTimer <= 0f)
+            if (jumpTimer <= 0f && grounded)
             {
                 Jump();
                 ResetJumpTimer();
@@ -132,6 +136,7 @@ public class PetBehavior : MonoBehaviour
 #region movement
     void MoveRandom()
     {
+        foreach (Rigidbody2D rb in rb)
         rb.velocity = new Vector2(randomDirection * currentSpeed, rb.velocity.y) * EnergyLevel ;
     }
     void sitStill()
@@ -147,7 +152,8 @@ public class PetBehavior : MonoBehaviour
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 jumpDirection = (mousePosition - (Vector2)transform.position).normalized;
         Vector2 jumpVelocity = jumpDirection * jumpAtMouseForce * EnergyLevel ;
-        rb.velocity = jumpVelocity;
+        foreach (Rigidbody2D rb in rb)
+            rb.velocity = jumpVelocity;
         mouseNearby = false;
 
         StartCoroutine(SlowDownVelocityAfterJump(mousePosition));
@@ -160,13 +166,15 @@ public class PetBehavior : MonoBehaviour
             yield return null;
         }
 
-        rb.velocity *= 0.1f; // Adjust the factor to control the slowdown speed
+        foreach (Rigidbody2D rb in rb)
+            rb.velocity *= 0.1f; // Adjust the factor to control the slowdown speed
     }
 
     void Jump()
     {
         jumpPower = UnityEngine.Random.Range(minJumpPower, maxJumpPower) * EnergyLevel ;
-        rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+        foreach (Rigidbody2D rb in rb)
+            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
     }
 
     void ResetJumpTimer()
@@ -197,6 +205,24 @@ public class PetBehavior : MonoBehaviour
 
     #endregion
 
+    private void GroundCheck()
+    {
+        //Scan for ground under body
+        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, raycastDistance, groundLayer);
+
+        // Check if the raycast hit a ground object
+        if (hit.collider != null)
+        {
+            // GameObject is close to the ground
+            grounded = true;
+        }
+        else
+        {
+            // GameObject is not close to the ground
+            grounded = false;
+        }
+        Debug.DrawRay(groundCheck.position, Vector2.down * raycastDistance, Color.red);
+    }
     private void ReadWorlTime()
     {
         DateTime currentTime = DateTime.Now;

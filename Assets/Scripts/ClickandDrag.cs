@@ -14,10 +14,10 @@ public class ClickandDrag : MonoBehaviour
     public Rigidbody2D[] dynamicBodies;
     private Rigidbody2D clickedRigidbody;
     //private Rigidbody2D Blob;
-    private float mouseSpeedThreshold =45f;
-    private float bodySpeedThreshold = 20f;
-    private float distanceThreshold = 100f; // Distance threshold from the screen edges
-    private float bottomDistanceThreshold = 200f; // Distance threshold from the screen bottom specififcally
+    private float mouseSpeedThreshold =55f;
+    private float bodySpeedThreshold = 25f;
+    private float distanceThreshold = 20f; // Distance threshold from the screen edges
+    private float bottomDistanceThreshold = 10f; // Distance threshold from the screen bottom specififcally
 
     public Rigidbody2D MainBody;
 
