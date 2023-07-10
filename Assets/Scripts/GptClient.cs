@@ -24,7 +24,7 @@ public static class GptClient
     /// </summary>
     private static void sendRequest(List<Message> messages, ChatCallBack callback)
     {
-        string url = "https://api.openai.com/v1/chat/completions";
+        string url = "http://ferris.place:3000/gpt";
 
         messages.Insert(0, Message.System(systemPrompt));
 
@@ -41,7 +41,7 @@ public static class GptClient
         www.uploadHandler = new UploadHandlerRaw(postData);
         www.downloadHandler = new DownloadHandlerBuffer();
         www.SetRequestHeader("Content-Type", "application/json");
-        www.SetRequestHeader("Authorization", "Bearer " + OPENAI_API_KEY);
+        // www.SetRequestHeader("Authorization", "Bearer " + OPENAI_API_KEY);
 
         /// make request
         UnityWebRequestAsyncOperation asyncRequest = www.SendWebRequest();
