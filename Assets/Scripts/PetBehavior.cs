@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
+
 
 public class PetBehavior : MonoBehaviour
 {
@@ -20,6 +22,7 @@ public class PetBehavior : MonoBehaviour
     private float currentSitTime;
     private float currentSpeed;
     private int randomDirection;
+    private float EnergyLevel = 1f;
 
     // Mouse Interaction Variables
     [Header("Mouse Interaction")]
@@ -39,8 +42,22 @@ public class PetBehavior : MonoBehaviour
     public float maxJumpPower = 10f;
     private float jumpTimer;
     private float jumpPower;
+    private bool grounded;
+    public Transform groundCheck;
+    public float raycastDistance = 0.5f;
+    public LayerMask groundLayer;
 
-    private Rigidbody2D rb;
+
+    private enum movementStates
+    {
+        Awake,
+        Tired,
+        Asleep,
+        DeepAsleep
+    }
+    private movementStates currentState = movementStates.Awake;
+
+    public Rigidbody2D[] rb;
 
     private void Awake()
     {
@@ -56,18 +73,21 @@ public class PetBehavior : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        currentMoveTime = Random.Range(minMoveTime, maxMoveTime);
-        currentSitTime = Random.Range(minSitTime,maxSitTime);
-        currentSpeed = Random.Range(minSpeed, maxSpeed);
-        randomDirection = Random.Range(0, 2) == 0 ? -1 : 1;
+        currentMoveTime = UnityEngine.Random.Range(minMoveTime, maxMoveTime);
+        currentSitTime = UnityEngine.Random.Range(minSitTime,maxSitTime);
+        currentSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
+        randomDirection = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1;
         sitStillFreqOG = sitStillFrequency;
 }
 
     void Update()
     {
+
+        ReadWorlTime();
+        GroundCheck();
+
         // Random Movement
-        if (canMove && !isHeld)
+        if (canMove && !isHeld && grounded)
         {
             currentMoveTime -= Time.deltaTime;
             if (currentMoveTime >= 0f)
@@ -76,7 +96,7 @@ public class PetBehavior : MonoBehaviour
             }
             else
             {
-                if (Random.value < sitStillFrequency)
+                if (UnityEngine.Random.value < sitStillFrequency)
                 {
                     // Pet sits still
                     sitStill();
@@ -85,16 +105,16 @@ public class PetBehavior : MonoBehaviour
                 {
                     // Randomly choose -1 (left) or 1 (right)
                     sitStillFrequency = sitStillFreqOG;
-                    randomDirection = Random.Range(0, 2) == 0 ? -1 : 1;
-                    currentMoveTime = Random.Range(minMoveTime, maxMoveTime);
-                    currentSpeed = Random.Range(minSpeed, maxSpeed);
+                    randomDirection = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1;
+                    currentMoveTime = UnityEngine.Random.Range(minMoveTime, maxMoveTime);
+                    currentSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
                 }
             }
 
             // Random Jumps
             jumpTimer -= Time.deltaTime;
 
-            if (jumpTimer <= 0f)
+            if (jumpTimer <= 0f && grounded)
             {
                 Jump();
                 ResetJumpTimer();
@@ -103,7 +123,7 @@ public class PetBehavior : MonoBehaviour
             }
 
             // Mouse Interaction
-            if (mouseNearby && Random.value < jumpAtMouseChance)
+            if (mouseNearby && UnityEngine.Random.value < jumpAtMouseChance)
             {
                 JumpAtMouse();
                 canMove = false;
@@ -113,25 +133,27 @@ public class PetBehavior : MonoBehaviour
 
         
     }
-
+#region movement
     void MoveRandom()
     {
-        rb.velocity = new Vector2(randomDirection * currentSpeed, rb.velocity.y);
+        foreach (Rigidbody2D rb in rb)
+        rb.velocity = new Vector2(randomDirection * currentSpeed, rb.velocity.y) * EnergyLevel ;
     }
     void sitStill()
     {
         sitStillFrequency -= 0.1f;
         canMove = false;
         StartCoroutine(EnableMovementAfterCooldown(1));
-        currentSitTime = Random.Range(minSitTime, maxSitTime);
+        currentSitTime = UnityEngine.Random.Range(minSitTime, maxSitTime);
     }
     void JumpAtMouse()
     {
         Debug.Log("Jumping at mouse");
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2 jumpDirection = (mousePosition - (Vector2)transform.position).normalized;
-        Vector2 jumpVelocity = jumpDirection * jumpAtMouseForce;
-        rb.velocity = jumpVelocity;
+        Vector2 jumpVelocity = jumpDirection * jumpAtMouseForce * EnergyLevel ;
+        foreach (Rigidbody2D rb in rb)
+            rb.velocity = jumpVelocity;
         mouseNearby = false;
 
         StartCoroutine(SlowDownVelocityAfterJump(mousePosition));
@@ -144,18 +166,20 @@ public class PetBehavior : MonoBehaviour
             yield return null;
         }
 
-        rb.velocity *= 0.1f; // Adjust the factor to control the slowdown speed
+        foreach (Rigidbody2D rb in rb)
+            rb.velocity *= 0.1f; // Adjust the factor to control the slowdown speed
     }
 
     void Jump()
     {
-        jumpPower = Random.Range(minJumpPower, maxJumpPower);
-        rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+        jumpPower = UnityEngine.Random.Range(minJumpPower, maxJumpPower) * EnergyLevel ;
+        foreach (Rigidbody2D rb in rb)
+            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
     }
 
     void ResetJumpTimer()
     {
-        jumpTimer = Random.Range(minJumpInterval, maxJumpInterval);
+        jumpTimer = UnityEngine.Random.Range(minJumpInterval, maxJumpInterval);
     }
 
     IEnumerator EnableMovementAfterCooldown(float cooldownTime)
@@ -179,7 +203,86 @@ public class PetBehavior : MonoBehaviour
         canMove = true;
     }
 
-    
+    #endregion
+
+    private void GroundCheck()
+    {
+        //Scan for ground under body
+        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, raycastDistance, groundLayer);
+
+        // Check if the raycast hit a ground object
+        if (hit.collider != null)
+        {
+            // GameObject is close to the ground
+            grounded = true;
+        }
+        else
+        {
+            // GameObject is not close to the ground
+            grounded = false;
+        }
+        Debug.DrawRay(groundCheck.position, Vector2.down * raycastDistance, Color.red);
+    }
+    private void ReadWorlTime()
+    {
+        DateTime currentTime = DateTime.Now;
+
+        // Check if the current time is past 8:00 PM
+        if (currentTime.Hour >= 20)
+        {
+            if (currentState == movementStates.Awake)
+            {
+                currentState = movementStates.Tired;
+                ChangeMovementState();
+            }
+        }
+        else 
+        { if (currentState != movementStates.Awake)
+            {
+                currentState = movementStates.Awake;
+                ChangeMovementState();
+            }
+        }
+    }
+
+    private void ChangeMovementState()
+    {
+        switch (currentState)
+        {
+            case movementStates.Awake:
+                FaceController.FaceManager.ChangeFace(FaceController.Expressions.Happy);
+                EnergyLevel = 1f;
+                break;
+            case movementStates.Tired:
+                FaceController.FaceManager.ChangeFace(FaceController.Expressions.Tired);
+                EnergyLevel = 0.5f;
+                float timerElapsed = 0f;
+                timerElapsed += Time.deltaTime;
+                Debug.Log(timerElapsed);
+                if (timerElapsed >= 10)
+                {
+                    currentState = movementStates.Asleep;
+                }
+                break;
+            case movementStates.Asleep:
+                FaceController.FaceManager.ChangeFace(FaceController.Expressions.Asleep);
+                EnergyLevel = 0f;
+                float timer2Elapsed = 0f;
+                timer2Elapsed += Time.deltaTime;
+                if (timer2Elapsed >= 60)
+                {
+                    currentState = movementStates.DeepAsleep;
+                }
+                break;
+            case movementStates.DeepAsleep:
+                FaceController.FaceManager.ChangeFace(FaceController.Expressions.Asleep);
+                EnergyLevel = 0f;
+                break;
+
+        }
+
+    }
+
     private void GptEventListener(GptEvent e) {
         switch (e) {
             case GptEvent.RequestSent _:

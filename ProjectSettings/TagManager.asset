@@ -5,14 +5,14 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
-  - body
   - ClickAndDrag
   - Blob
+  - Body
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
   - ClickAndDrag

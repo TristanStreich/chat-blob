@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public string bodyTag = "body";
+    public string bodyTag = "Body";
     public float searchRadius = 1f;
 
     private void Update()

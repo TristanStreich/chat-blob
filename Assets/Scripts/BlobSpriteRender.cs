@@ -6,7 +6,7 @@ using UnityEngine.U2D;
 public class BlobSpriteRender : MonoBehaviour
 {
     #region Constants
-    private const float splineOffset = 0.5f;
+    private const float splineOffset = 1f;
     #endregion
     #region Fields
     [SerializeField]
