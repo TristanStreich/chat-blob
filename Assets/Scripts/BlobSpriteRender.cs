@@ -25,7 +25,7 @@ public class BlobSpriteRender : MonoBehaviour
     private float hue;
     public float ColortransitionSpeed = 1f; // Adjust the speed of the color transition
     #endregion
-
+    public bool invertTangent = false;
 
     private void Awake()
     {
@@ -107,7 +107,7 @@ public class BlobSpriteRender : MonoBehaviour
             float _colliderRadius = points[i].gameObject.GetComponent<CircleCollider2D>().radius;
             try
             {
-                spriteShape.spline.SetPosition(i, (_vertex - _towardsCenter *  (_colliderRadius + vertexOffsets[i])));
+                spriteShape.spline.SetPosition(i, (_vertex - _towardsCenter * (_colliderRadius + vertexOffsets[i])));
             }
 
             catch
@@ -117,12 +117,20 @@ public class BlobSpriteRender : MonoBehaviour
             }
 
             Vector2 _lt = spriteShape.spline.GetLeftTangent(i);
-
+            
             Vector2 _newLt = Vector2.Perpendicular(_towardsCenter) * _lt.magnitude;
             Vector2 _newRt = Vector2.zero - (_newLt);
 
-            spriteShape.spline.SetRightTangent(i, _newRt);
-            spriteShape.spline.SetLeftTangent(i, _newLt);
+            if (invertTangent)
+            {
+                spriteShape.spline.SetRightTangent(i, _newLt);
+                spriteShape.spline.SetLeftTangent(i, _newRt);
+            }
+            else
+            {
+                spriteShape.spline.SetRightTangent(i, _newRt);
+                spriteShape.spline.SetLeftTangent(i, _newLt);
+            }
 
         }
     }
