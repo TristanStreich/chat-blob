@@ -36,6 +36,7 @@ public class BlobSpriteRender : MonoBehaviour
         hue = 0f; // Initial hue value (red)
         UpdateVerticies();
         SpotifyEvent.Emitter.AddListener(spotifyListener);
+
     }
 
     private void Update()

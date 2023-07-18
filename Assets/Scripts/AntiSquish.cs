@@ -7,6 +7,7 @@ public class AntiSquish : MonoBehaviour
     private Camera mainCamera;
     private ClickandDrag[] DragScripts;
     public CircleCollider2D SquishTrigger;
+    public LayerMask antiSquish;
 
     private void Awake()
     {
@@ -22,7 +23,7 @@ public class AntiSquish : MonoBehaviour
     {
         // Cast a ray from the mouse position
         Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
+        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero, Mathf.Infinity, antiSquish);
 
         if (hit.collider != null)
         {

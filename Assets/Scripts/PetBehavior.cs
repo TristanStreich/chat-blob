@@ -100,6 +100,8 @@ public class PetBehavior : MonoBehaviour
         IdleMoveMovement();
     }
 
+
+    #region movement
     void IdleMoveMovement()
     {
         if (canMove && !isHeld && grounded)
@@ -110,14 +112,14 @@ public class PetBehavior : MonoBehaviour
                 currentSpeed = MoveCurve.Evaluate(currentMoveTime);
                 foreach (Rigidbody2D rb in rb)
                 {
-                        rb.velocity = new Vector2(randomDirection * currentSpeed, rb.velocity.y) * EnergyLevel;
+                    rb.velocity = new Vector2(randomDirection * currentSpeed, rb.velocity.y) * EnergyLevel;
                 }
             }
             else //otherwise sit still for a period and then pick a new movement amount
             {
                 if (UnityEngine.Random.value < sitStillFrequency)
                 {
-                    
+
                     sitStill();
                 }
                 else
@@ -153,8 +155,6 @@ public class PetBehavior : MonoBehaviour
             #endregion
         }
     }
-    #region movement
-    
     void sitStill()
     {
         sitStillFrequency -= 0.1f;
@@ -209,8 +209,6 @@ public class PetBehavior : MonoBehaviour
         canMove = true;
     }
 
-    #endregion
-
     private void GroundCheck()
     {
         //Scan for ground under body
@@ -254,6 +252,10 @@ public class PetBehavior : MonoBehaviour
         }
         Debug.DrawRay(leftWallCheck.position, Vector2.left * raycastDistance, Color.green);
     }
+
+    #endregion
+
+    
     private void ReadWorlTime()
     {
         DateTime currentTime = DateTime.Now;
