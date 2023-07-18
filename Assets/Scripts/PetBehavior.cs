@@ -13,21 +13,25 @@ public class PetBehavior : MonoBehaviour
     public float minSpeed = 1f; // Minimum speed
     public float maxSpeed = 5f; // Maximum speed
     public float sitStillFrequency = 0.5f; // How frequently it sits still (0 = always, 1 = never)
-    private float sitStillFreqOG;
-    public float minMoveTime = 1f;
-    public float maxMoveTime = 3f;
-    public float minSitTime = 1f;
-    public float maxSitTime = 3f;
+    private float sitStillFreqOG; //saves the sit still timer so i can be used again
+    public float minMoveTime = 1f; //min of how much it will move in one move action
+    public float maxMoveTime = 3f; //max of how much it will move in one move action
+    public float minSitTime = 1f; //min of how much it will sit still in one sit action
+    public float maxSitTime = 3f; //max of how much it will sit still in one sit action
+    public AnimationCurve MoveCurve; //organic movement made from this
     private float currentMoveTime;
     private float currentSitTime;
     private float currentSpeed;
     private int randomDirection;
     private float EnergyLevel = 1f;
 
+
     // Mouse Interaction Variables
     [Header("Mouse Interaction")]
     public float jumpAtMouseChance = 0.5f;
     public float jumpAtMouseForce = 7f;
+    public float reachForMouseChance;
+    public float reachForMouseSpeed;
     public float jumpAtMouseCooldown = 3f;
     private bool mouseNearby;
     [HideInInspector]
@@ -44,8 +48,11 @@ public class PetBehavior : MonoBehaviour
     private float jumpPower;
     private bool grounded;
     public Transform groundCheck;
+    public Transform leftWallCheck;
+    public Transform rightWallCheck;
     public float raycastDistance = 0.5f;
     public LayerMask groundLayer;
+    public LayerMask wallLayer;
 
 
     private enum movementStates
@@ -73,6 +80,7 @@ public class PetBehavior : MonoBehaviour
 
     void Start()
     {
+        //sets a bunch of private vars to avoid bugs
         currentMoveTime = UnityEngine.Random.Range(minMoveTime, maxMoveTime);
         currentSitTime = UnityEngine.Random.Range(minSitTime,maxSitTime);
         currentSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
@@ -82,23 +90,34 @@ public class PetBehavior : MonoBehaviour
 
     void Update()
     {
-
+        //check if sleepy
         ReadWorlTime();
+        //check for ground
         GroundCheck();
+        //check for walls
+        WallCheck();
+        //timers and such for moving and other idle activities
+        IdleMoveMovement();
+    }
 
-        // Random Movement
+    void IdleMoveMovement()
+    {
         if (canMove && !isHeld && grounded)
         {
             currentMoveTime -= Time.deltaTime;
-            if (currentMoveTime >= 0f)
+            if (currentMoveTime >= 0f) //while moving timer is active: move
             {
-                MoveRandom();
+                currentSpeed = MoveCurve.Evaluate(currentMoveTime);
+                foreach (Rigidbody2D rb in rb)
+                {
+                        rb.velocity = new Vector2(randomDirection * currentSpeed, rb.velocity.y) * EnergyLevel;
+                }
             }
-            else
+            else //otherwise sit still for a period and then pick a new movement amount
             {
                 if (UnityEngine.Random.value < sitStillFrequency)
                 {
-                    // Pet sits still
+                    
                     sitStill();
                 }
                 else
@@ -106,12 +125,13 @@ public class PetBehavior : MonoBehaviour
                     // Randomly choose -1 (left) or 1 (right)
                     sitStillFrequency = sitStillFreqOG;
                     randomDirection = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1;
-                    currentMoveTime = UnityEngine.Random.Range(minMoveTime, maxMoveTime);
-                    currentSpeed = UnityEngine.Random.Range(minSpeed, maxSpeed);
+                    currentMoveTime = Mathf.Floor(UnityEngine.Random.Range(minMoveTime, maxMoveTime + 1));
+
+
                 }
             }
 
-            // Random Jumps
+            #region Random Jumps
             jumpTimer -= Time.deltaTime;
 
             if (jumpTimer <= 0f && grounded)
@@ -121,7 +141,8 @@ public class PetBehavior : MonoBehaviour
                 canMove = false;
                 StartCoroutine(EnableMovementAfterCooldown(jumpAtMouseCooldown));
             }
-
+            #endregion
+            #region Mouse Interaction
             // Mouse Interaction
             if (mouseNearby && UnityEngine.Random.value < jumpAtMouseChance)
             {
@@ -129,16 +150,11 @@ public class PetBehavior : MonoBehaviour
                 canMove = false;
                 StartCoroutine(EnableMovementAfterCooldown(jumpAtMouseCooldown));
             }
+            #endregion
         }
-
-        
     }
-#region movement
-    void MoveRandom()
-    {
-        foreach (Rigidbody2D rb in rb)
-        rb.velocity = new Vector2(randomDirection * currentSpeed, rb.velocity.y) * EnergyLevel ;
-    }
+    #region movement
+    
     void sitStill()
     {
         sitStillFrequency -= 0.1f;
@@ -188,16 +204,6 @@ public class PetBehavior : MonoBehaviour
         canMove = true;
     }
 
-    void OnMouseEnter()
-    {
-        mouseNearby = true;
-    }
-
-    void OnMouseExit()
-    {
-        mouseNearby = false;
-    }
-
     public void CanMove()
     {
         canMove = true;
@@ -222,6 +228,31 @@ public class PetBehavior : MonoBehaviour
             grounded = false;
         }
         Debug.DrawRay(groundCheck.position, Vector2.down * raycastDistance, Color.red);
+    }
+
+    private void WallCheck()
+    {
+        //Scan for ground under body
+        RaycastHit2D rightHit = Physics2D.Raycast(rightWallCheck.position, Vector2.right, raycastDistance, wallLayer);
+
+        // Check if the raycast hit a ground object
+        if (rightHit.collider != null)
+        {
+            // alter directional input to turn away
+            randomDirection = -1;
+        }
+        Debug.DrawRay(rightWallCheck.position, Vector2.right * raycastDistance, Color.blue);
+
+        //Scan for ground under body
+        RaycastHit2D leftHit = Physics2D.Raycast(leftWallCheck.position, Vector2.left, raycastDistance, wallLayer);
+
+        // Check if the raycast hit a ground object
+        if (leftHit.collider != null)
+        {
+            // alter directional input to turn away
+            randomDirection = 1;
+        }
+        Debug.DrawRay(leftWallCheck.position, Vector2.left * raycastDistance, Color.green);
     }
     private void ReadWorlTime()
     {

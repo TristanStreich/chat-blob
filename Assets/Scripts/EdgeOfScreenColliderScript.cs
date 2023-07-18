@@ -28,8 +28,11 @@ public class EdgeOfScreenColliderScript : MonoBehaviour
         leftCollider.name = "LeftCollider";
 
         //Layer Our Objects 
-        int GroundLayer = LayerMask.NameToLayer("Ground");
-        bottomCollider.gameObject.layer = GroundLayer;
+        int groundLayer = LayerMask.NameToLayer("Ground");
+        int wallLayer = LayerMask.NameToLayer("Wall");
+        leftCollider.gameObject.layer = wallLayer;
+        rightCollider.gameObject.layer = wallLayer;
+        bottomCollider.gameObject.layer = groundLayer;
 
 
         // Add Collider to Objects

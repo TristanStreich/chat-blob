@@ -14,6 +14,7 @@ public class BlobSpriteRender : MonoBehaviour
     [SerializeField]
     public Transform[] points;
 
+
     private SpriteShapeRenderer spriteRenderer;
 
     [Header ("Party Time")]
@@ -43,6 +44,7 @@ public class BlobSpriteRender : MonoBehaviour
             PartyMode(PartyLikeNobodyIsWatching);
 
             UpdateVerticies();
+
     }
 
     private void PartyMode(bool PartyTime)
@@ -121,6 +123,8 @@ public class BlobSpriteRender : MonoBehaviour
             Vector2 _newLt = Vector2.Perpendicular(_towardsCenter) * _lt.magnitude;
             Vector2 _newRt = Vector2.zero - (_newLt);
 
+            //Vector2 _leftEnd = spriteShape.spline.GetPosition(i+1 % points.Length);
+
             if (invertTangent)
             {
                 spriteShape.spline.SetRightTangent(i, _newLt);
@@ -133,6 +137,8 @@ public class BlobSpriteRender : MonoBehaviour
             }
 
         }
+
+       
     }
 
 
