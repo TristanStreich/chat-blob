@@ -46,6 +46,9 @@ public class PetScaleScript : MonoBehaviour
                 Spring.distance += ThreesChange;
                 Spring.frequency -= springFreqChange;
             }
+
+            //change other things that need to scale
+            PetBehavior.PetBehav.raycastDistance += 0.1f;
         }
     }
 
@@ -78,6 +81,9 @@ public class PetScaleScript : MonoBehaviour
                 Spring.distance -= ThreesChange;
                 Spring.frequency += springFreqChange;
             }
+
+            //change other things that need to scale
+            PetBehavior.PetBehav.raycastDistance += -0.1f;
         }
     }
 }
