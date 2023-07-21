@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PetScaleScript : MonoBehaviour
 {
+    [Range(1, 5)]
+    public int startingSize;
 
+    [Header ("DO NOT TOUCH")]
     public SpringJoint2D[] Centers;
     public SpringJoint2D[] Ones;
     public SpringJoint2D[] Twos;
@@ -16,6 +19,15 @@ public class PetScaleScript : MonoBehaviour
     private float ThreesChange = 0.42f;
 
     private float springFreqChange = 0.5f;
+
+    private void Start()
+    {
+        for (int i = 0; i < 5 - startingSize; i++)
+        {
+            Shrink();
+        }
+    }
+
 
     [ContextMenu("Grow")]
     public void Grow()

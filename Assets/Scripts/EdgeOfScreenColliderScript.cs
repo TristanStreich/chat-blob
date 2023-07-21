@@ -11,6 +11,7 @@ public class EdgeOfScreenColliderScript : MonoBehaviour
     private Transform rightCollider;
     private Transform leftCollider;
     public Vector3 CameraPosition;
+    private float floorHeight = 0.48f;
 
     private void Start()
     {
@@ -69,6 +70,6 @@ public class EdgeOfScreenColliderScript : MonoBehaviour
         topCollider.position = new Vector3(CameraPosition.x, CameraPosition.y + screenSize.y + (topCollider.localScale.y * 0.5f), 0f);
         //BottomCollider:
         bottomCollider.localScale = new Vector3(screenSize.x * 2, colDepth, colDepth);
-        bottomCollider.position = new Vector3(CameraPosition.x, CameraPosition.y - screenSize.y - (bottomCollider.localScale.y * 0.5f), 0f);
+        bottomCollider.position = new Vector3(CameraPosition.x, CameraPosition.y - screenSize.y - (bottomCollider.localScale.y * 0.5f) + floorHeight, 0f);
     }
 }

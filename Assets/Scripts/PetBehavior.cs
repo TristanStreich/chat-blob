@@ -229,6 +229,9 @@ public class PetBehavior : MonoBehaviour
         //Scan for ground under body
         RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, raycastDistance, groundLayer);
 
+        Vector2 verticalVelocity = new Vector2(rb[0].velocity.y, 0f);
+        float verticalMagnitude = verticalVelocity.magnitude;
+
         // Check if the raycast hit a ground object
         if (hit.collider != null)
         {
@@ -279,7 +282,7 @@ public class PetBehavior : MonoBehaviour
         float horizontalMagnitude = horizontalVelocity.magnitude;
 
         // Check if the raycast is away from ground and touching right wall;
-        if (hit.collider == null && rightHit.collider != null && !isHeld && horizontalMagnitude > 3)
+        if (hit.collider == null && rightHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3)
         {
             // GameObject is close to the ground
             jumpAngle = 45;
@@ -294,7 +297,7 @@ public class PetBehavior : MonoBehaviour
                 
         }
         // Check if the raycast is away from ground and touching right wall;
-        if (hit.collider == null && leftHit.collider != null && !isHeld &&horizontalMagnitude > 3)
+        if (hit.collider == null && leftHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3)
         {
             // GameObject is close to the ground
             jumpAngle = -45;
