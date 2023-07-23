@@ -16,8 +16,6 @@ public class PetBehavior : MonoBehaviour
     private float sitStillFreqOG; //saves the sit still timer so i can be used again
     public float minMoveTime = 1f; //min of how much it will move in one move action
     public float maxMoveTime = 3f; //max of how much it will move in one move action
-    public float minSitTime = 1f; //min of how much it will sit still in one sit action
-    public float maxSitTime = 3f; //max of how much it will sit still in one sit action
     public AnimationCurve MoveCurve; //organic movement made from this
     private float currentMoveTime;
     private float currentSitTime;
@@ -47,8 +45,7 @@ public class PetBehavior : MonoBehaviour
     public float minJumpAngle, maxJumpAngle;
     private float jumpTimer;
     private bool grounded;
-    private bool canWallJump;
-    private float jumpAngle = 0;
+    public float jumpAngle = 0;
     private float jumpMagnitude = 0;
     public Transform groundCheck;
     public Transform leftWallCheck;
@@ -59,6 +56,8 @@ public class PetBehavior : MonoBehaviour
     public LayerMask wallLayer;
     RaycastHit2D leftHit;
     RaycastHit2D rightHit;
+    bool naturalJump = true;
+
 
 
     private enum movementStates
@@ -88,7 +87,6 @@ public class PetBehavior : MonoBehaviour
     {
         //sets a bunch of private vars to avoid bugs
         currentMoveTime = UnityEngine.Random.Range(minMoveTime, maxMoveTime);
-        currentSitTime = UnityEngine.Random.Range(minSitTime,maxSitTime);
         currentSpeed = 0;
         randomDirection = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1;
         sitStillFreqOG = sitStillFrequency;
@@ -106,14 +104,18 @@ public class PetBehavior : MonoBehaviour
         WallJumpCheck();
         //timers and such for moving and other idle activities
         IdleMoveMovement();
+        
     }
 
 
     #region movement
     void IdleMoveMovement()
     {
+        
         if (canMove && !isHeld && grounded)
         {
+            #region Random Walking
+            
             currentMoveTime -= Time.deltaTime;
             if (currentMoveTime >= 0f) //while moving timer is active: move
             {
@@ -127,7 +129,6 @@ public class PetBehavior : MonoBehaviour
             {
                 if (UnityEngine.Random.value < sitStillFrequency)
                 {
-
                     sitStill();
                 }
                 else
@@ -139,17 +140,21 @@ public class PetBehavior : MonoBehaviour
                 }
             }
 
+            #endregion
+
             #region Random Jumps
             jumpTimer -= Time.deltaTime;
 
             if (jumpTimer <= 0f && grounded)
             {
+                naturalJump = true;
                 jumpAngle = UnityEngine.Random.Range(minJumpAngle, maxJumpAngle);
                 jumpMagnitude = UnityEngine.Random.Range(minJumpPower, maxJumpPower) * EnergyLevel;
                 Jump();
                 ResetJumpTimer();
                 canMove = false;
-                StartCoroutine(EnableMovementAfterCooldown(jumpAtMouseCooldown));
+                StartCoroutine(EnableMovementAfterCooldown(3));
+                
             }
             #endregion
             #region Mouse Interaction
@@ -164,7 +169,7 @@ public class PetBehavior : MonoBehaviour
         }
         if (isHeld)
         {
-            canWallJump = true; //fix
+            naturalJump = false;
         }
     }
     void sitStill()
@@ -172,7 +177,6 @@ public class PetBehavior : MonoBehaviour
         sitStillFrequency -= 0.1f;
         canMove = false;
         StartCoroutine(EnableMovementAfterCooldown(1));
-        currentSitTime = UnityEngine.Random.Range(minSitTime, maxSitTime);
     }
     void JumpAtMouse()
     {
@@ -237,7 +241,28 @@ public class PetBehavior : MonoBehaviour
         {
             // GameObject is close to the ground
             grounded = true;
-            canWallJump = true;
+            
+            if (rb[0].velocity.magnitude > 15 && !isHeld && !naturalJump)
+            {
+                jumpAngle = 45;
+                if (rb[0].velocity.x > 0) // right 
+                {                    
+                    jumpAngle *= -1; //invert jump angle              
+                    jumpMagnitude = rb[0].velocity.magnitude * 0.75f;
+                    
+                    Jump();
+                    canMove = false;
+                    StartCoroutine(EnableMovementAfterCooldown(3));
+                }
+                if (rb[0].velocity.x < 0) // left
+                {                 
+                    jumpMagnitude = rb[0].velocity.magnitude * 0.75f;
+                    
+                    Jump();
+                    canMove = false;
+                    StartCoroutine(EnableMovementAfterCooldown(3));
+                }
+            } 
         }
         else
         {
@@ -276,43 +301,24 @@ public class PetBehavior : MonoBehaviour
 
     private void WallJumpCheck()
     {
-        //Scan for ground under body
-        RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, wallJumpGroundDistance, groundLayer);
-        Vector2 horizontalVelocity = new Vector2(rb[0].velocity.x, 0f);
-        float horizontalMagnitude = horizontalVelocity.magnitude;
-
+      
         // Check if the raycast is away from ground and touching right wall;
-        if (hit.collider == null && rightHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3)
+        if (rightHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3)
         {
-            // GameObject is close to the ground
+            // GameObject is close to wall
             jumpAngle = 45;
-            //float currentSpeed = Mathf.Clamp(rb[0].velocity.magnitude,0, maxJumpPower);
-            jumpMagnitude = rb[0].velocity.magnitude * 0.9f;
-            if (canWallJump)
-            {
-                //Debug.Log("DoubleJumping");
-                //canWallJump = false;
-                Jump();
-            }
-                
+            jumpMagnitude = rb[0].velocity.magnitude * 0.9f;           
+            Jump();
         }
         // Check if the raycast is away from ground and touching right wall;
-        if (hit.collider == null && leftHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3)
+        if (leftHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3)
         {
-            // GameObject is close to the ground
+            // GameObject is close to  wall
             jumpAngle = -45;
-            jumpMagnitude = rb[0].velocity.magnitude * 0.9f;
-
-            if (canWallJump)
-            {
-                //Debug.Log("DoubleJumping");
-                //canWallJump = false;
-                Jump();
-            }
-
+            jumpMagnitude = rb[0].velocity.magnitude * 0.9f;          
+            Jump();
         }
 
-        Debug.DrawRay(groundCheck.position + new Vector3(0.01f,0,0), Vector2.down * wallJumpGroundDistance, Color.white);
     }
 
     #endregion

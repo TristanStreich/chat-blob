@@ -59,9 +59,12 @@ public class TransparentWindow : MonoBehaviour {
     private IntPtr hWnd;
 
     private void Start() {
-        
+
 
 #if !UNITY_EDITOR
+        
+        gameObject.GetComponent<Camera>().backgroundColor = Color.black;
+
         hWnd = GetActiveWindow();
 
         MARGINS margins = new MARGINS { cxLeftWidth = -1 };

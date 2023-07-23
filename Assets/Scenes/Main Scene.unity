@@ -2503,7 +2503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c56ec56f8031048b52d9a030d4592a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingSize: 5
+  startingSize: 3
   Centers:
   - {fileID: 184305541}
   - {fileID: 408772376}
@@ -2701,8 +2701,6 @@ MonoBehaviour:
   sitStillFrequency: 0.8
   minMoveTime: 1
   maxMoveTime: 3
-  minSitTime: 1
-  maxSitTime: 3
   MoveCurve:
     serializedVersion: 2
     m_Curve:
@@ -2785,6 +2783,7 @@ MonoBehaviour:
   maxJumpPower: 20
   minJumpAngle: -30
   maxJumpAngle: 30
+  jumpAngle: 0
   groundCheck: {fileID: 1962071930}
   leftWallCheck: {fileID: 1350147297}
   rightWallCheck: {fileID: 1674325309}

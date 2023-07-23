@@ -11,10 +11,14 @@ public class EdgeOfScreenColliderScript : MonoBehaviour
     private Transform rightCollider;
     private Transform leftCollider;
     public Vector3 CameraPosition;
-    private float floorHeight = 0.48f;
+    private float floorHeight = 0f; //0.48f out of editor;
 
     private void Start()
     {
+#if !UNITY_EDITOR
+        floorHeight = 0.48f;
+#endif
+
         // Generate our empty objects
         topCollider = new GameObject().transform;
         bottomCollider = new GameObject().transform;
