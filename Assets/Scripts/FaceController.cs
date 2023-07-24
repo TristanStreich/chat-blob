@@ -69,7 +69,6 @@ public class FaceController : MonoBehaviour
     {
         switch (Expression)
         {
-            default:
             case Expressions.Happy:
                 for (int i = 0; i < eyes.Length; i++)
                 {
@@ -102,7 +101,9 @@ public class FaceController : MonoBehaviour
             case Expressions.Eating:                
                 Debug.Log("eating");                
                 break;
-
+            default:
+                Debug.LogError("Called changeFace with an invalid expression kind");
+                break;
         }
     }
 

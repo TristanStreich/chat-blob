@@ -46,6 +46,8 @@ public class BlobSpriteRender : MonoBehaviour
 
             UpdateVerticies();
 
+            checkAndFixInvertedSystem();
+
     }
 
     private void PartyMode(bool PartyTime)
@@ -140,6 +142,36 @@ public class BlobSpriteRender : MonoBehaviour
         }
 
        
+    }
+
+    Transform getCenterNode() {
+        return points[6];
+    }
+
+    Transform getAnchorNode() {
+        return points[0];
+    }
+
+    // gets the point that is counter clockwise to the anchor node
+    Transform getAnchorNeighbor() {
+        return points[1];
+    }
+
+
+    void checkAndFixInvertedSystem() {
+        invertTangent = isInverted();
+    }
+
+    Vector3 clockwiseChecker = new Vector3(0,0,1);
+
+    bool isInverted() {
+        Transform center = getCenterNode();
+        Vector3 vec0 = center.position - getAnchorNode().position;
+        Vector3 vec1 = center.position - getAnchorNeighbor().position;
+
+        var invertedFactor = Vector3.Dot(Vector3.Cross(vec0, vec1), clockwiseChecker);
+
+        return invertedFactor < 0;
     }
 
 
