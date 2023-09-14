@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-
+using JetBrains.Annotations;
 
 public class PetBehavior : MonoBehaviour
 {
@@ -22,7 +22,6 @@ public class PetBehavior : MonoBehaviour
     private float currentSpeed;
     private int randomDirection;
     private float EnergyLevel = 1f;
-
 
     // Mouse Interaction Variables
     [Header("Mouse Interaction")]
@@ -57,6 +56,7 @@ public class PetBehavior : MonoBehaviour
     RaycastHit2D leftHit;
     RaycastHit2D rightHit;
     bool naturalJump = true;
+    bool CanWallBounce = true;
 
 
 
@@ -201,6 +201,7 @@ public class PetBehavior : MonoBehaviour
         foreach (Rigidbody2D rb in rb)
             rb.velocity *= 0.1f; // Adjust the factor to control the slowdown speed
     }
+   
 
     void Jump()
     {
@@ -222,6 +223,12 @@ public class PetBehavior : MonoBehaviour
         yield return new WaitForSeconds(cooldownTime);
         canMove = true;
     }
+    IEnumerator WallBounceCooldown(float cooldownTime)
+    {
+        CanWallBounce = false;
+        yield return new WaitForSeconds(cooldownTime);
+        CanWallBounce = true;
+    }
 
     public void CanMove()
     {
@@ -242,7 +249,7 @@ public class PetBehavior : MonoBehaviour
             // GameObject is close to the ground
             grounded = true;
             
-            if (rb[0].velocity.magnitude > 15 && !isHeld && !naturalJump)
+            if (rb[0].velocity.magnitude > 15 && !isHeld && !naturalJump && CanWallBounce)
             {
                 jumpAngle = 45;
                 if (rb[0].velocity.x > 0) // right 
@@ -253,6 +260,7 @@ public class PetBehavior : MonoBehaviour
                     Jump();
                     canMove = false;
                     StartCoroutine(EnableMovementAfterCooldown(3));
+                    
                 }
                 if (rb[0].velocity.x < 0) // left
                 {                 
@@ -262,6 +270,7 @@ public class PetBehavior : MonoBehaviour
                     canMove = false;
                     StartCoroutine(EnableMovementAfterCooldown(3));
                 }
+                StartCoroutine(WallBounceCooldown(0.2f));
             } 
         }
         else
@@ -281,8 +290,7 @@ public class PetBehavior : MonoBehaviour
         if (rightHit.collider != null)
         {
             // alter directional input to turn away
-            randomDirection = -1;
-            
+            randomDirection = -1;         
         }
         Debug.DrawRay(rightWallCheck.position, Vector2.right * raycastDistance, Color.blue);
 
@@ -301,22 +309,24 @@ public class PetBehavior : MonoBehaviour
 
     private void WallJumpCheck()
     {
-      
+        
         // Check if the raycast is away from ground and touching right wall;
-        if (rightHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3)
+        if (rightHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3 && CanWallBounce)
         {
             // GameObject is close to wall
             jumpAngle = 45;
             jumpMagnitude = rb[0].velocity.magnitude * 0.9f;           
             Jump();
+            StartCoroutine(WallBounceCooldown(0.2f));
         }
         // Check if the raycast is away from ground and touching right wall;
-        if (leftHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3)
+        if (leftHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3 && CanWallBounce)
         {
             // GameObject is close to  wall
             jumpAngle = -45;
             jumpMagnitude = rb[0].velocity.magnitude * 0.9f;          
             Jump();
+            StartCoroutine(WallBounceCooldown(0.2f));
         }
 
     }

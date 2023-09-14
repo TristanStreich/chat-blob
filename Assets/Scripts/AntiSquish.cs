@@ -5,13 +5,13 @@ using UnityEngine;
 public class AntiSquish : MonoBehaviour
 {
     private Camera mainCamera;
-    private ClickandDrag[] DragScripts;
+    private BlobClickandDrag[] DragScripts;
     public CircleCollider2D SquishTrigger;
     public LayerMask antiSquish;
 
     private void Awake()
     {
-        DragScripts = FindObjectsOfType<ClickandDrag>();
+        DragScripts = FindObjectsOfType<BlobClickandDrag>();
     }
 
     private void Start()
@@ -31,7 +31,7 @@ public class AntiSquish : MonoBehaviour
             if (hit.collider == SquishTrigger)
             {
                 
-                foreach (ClickandDrag script in DragScripts)
+                foreach (BlobClickandDrag script in DragScripts)
                 {
                     if (script.isDragging)
                     {

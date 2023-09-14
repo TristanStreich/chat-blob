@@ -48,11 +48,11 @@ public class GameManager : MonoBehaviour
         obj.transform.position = position;
 
         // Perform any additional logic for grabbing the object
-        ClickandDrag clickAndDrag = obj.GetComponent<ClickandDrag>();
-        if (clickAndDrag != null)
+        BlobClickandDrag BlobClickandDrag = obj.GetComponent<BlobClickandDrag>();
+        if (BlobClickandDrag != null)
         {
-            //clickAndDrag.OnMouseDown();
-            //clickAndDrag.OnMouseDrag(); // Trigger the OnMouseDrag event
+            //BlobClickandDrag.OnMouseDown();
+            //BlobClickandDrag.OnMouseDrag(); // Trigger the OnMouseDrag event
         }
     }
 }

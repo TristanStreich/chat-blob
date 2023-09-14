@@ -5,6 +5,7 @@ using UnityEngine;
 public class EdgeOfScreenColliderScript : MonoBehaviour
 {
     public float colDepth = 3f;
+    public PhysicsMaterial2D friction;
     private Vector2 screenSize;
     private Transform topCollider;
     private Transform bottomCollider;
@@ -41,10 +42,10 @@ public class EdgeOfScreenColliderScript : MonoBehaviour
 
 
         // Add Collider to Objects
-        topCollider.gameObject.AddComponent<BoxCollider2D>();
-        bottomCollider.gameObject.AddComponent<BoxCollider2D>();
-        rightCollider.gameObject.AddComponent<BoxCollider2D>();
-        leftCollider.gameObject.AddComponent<BoxCollider2D>();
+        topCollider.gameObject.AddComponent<BoxCollider2D>().sharedMaterial = friction;
+        bottomCollider.gameObject.AddComponent<BoxCollider2D>().sharedMaterial = friction;
+        rightCollider.gameObject.AddComponent<BoxCollider2D>().sharedMaterial = friction;
+        leftCollider.gameObject.AddComponent<BoxCollider2D>().sharedMaterial = friction;
 
 
         //Make them the child of Whatever Objects
@@ -52,7 +53,6 @@ public class EdgeOfScreenColliderScript : MonoBehaviour
         bottomCollider.parent = transform;
         rightCollider.parent = transform;
         leftCollider.parent = transform;
-
 
 
 

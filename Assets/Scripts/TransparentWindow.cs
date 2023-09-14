@@ -60,7 +60,7 @@ public class TransparentWindow : MonoBehaviour {
 
     private void Start() {
 
-
+        
 #if !UNITY_EDITOR
         
         gameObject.GetComponent<Camera>().backgroundColor = Color.black;
@@ -77,6 +77,7 @@ public class TransparentWindow : MonoBehaviour {
 #endif
 
         Application.runInBackground = true;
+        
     }
 
     private void Update() {
@@ -84,7 +85,7 @@ public class TransparentWindow : MonoBehaviour {
 #if !UNITY_EDITOR
         //SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, 0);
 #endif
-
+     
     }
 
     private void SetClickthrough(bool clickthrough) {
