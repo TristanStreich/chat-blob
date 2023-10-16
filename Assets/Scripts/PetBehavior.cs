@@ -58,7 +58,7 @@ public class PetBehavior : MonoBehaviour
     bool naturalJump = true;
     bool CanWallBounce = true;
 
-
+    public GameObject ParticleBlob;
 
     private enum movementStates
     {
@@ -206,7 +206,7 @@ public class PetBehavior : MonoBehaviour
     void Jump()
     {
         Vector2 jumpVector = Quaternion.Euler(0f, 0f, jumpAngle) * Vector2.up * jumpMagnitude;
-
+        
         foreach (Rigidbody2D rb in rb)
         {
             rb.velocity = jumpVector;
@@ -249,28 +249,35 @@ public class PetBehavior : MonoBehaviour
             // GameObject is close to the ground
             grounded = true;
             
-            if (rb[0].velocity.magnitude > 15 && !isHeld && !naturalJump && CanWallBounce)
+            if (rb[0].velocity.magnitude > 15 && !isHeld )
             {
-                jumpAngle = 45;
-                if (rb[0].velocity.x > 0) // right 
-                {                    
-                    jumpAngle *= -1; //invert jump angle              
-                    jumpMagnitude = rb[0].velocity.magnitude * 0.75f;
-                    
-                    Jump();
-                    canMove = false;
-                    StartCoroutine(EnableMovementAfterCooldown(3));
-                    
+                //spawns particles on fast contact with obstacles, more particles when the speed is faster.
+                Instantiate(ParticleBlob, transform.position, Quaternion.identity);
+
+                if (!naturalJump && CanWallBounce) //read for bouncing off floor when thrown
+                {
+                    jumpAngle = 45;
+                    if (rb[0].velocity.x > 0) // right 
+                    {
+                        jumpAngle *= -1; //invert jump angle              
+                        jumpMagnitude = rb[0].velocity.magnitude * 0.75f;
+
+                        Jump();
+                        canMove = false;
+                        StartCoroutine(EnableMovementAfterCooldown(3));
+                        
+                    }
+                    if (rb[0].velocity.x < 0) // left
+                    {
+                        jumpMagnitude = rb[0].velocity.magnitude * 0.75f;
+
+                        Jump();
+                        canMove = false;
+                        StartCoroutine(EnableMovementAfterCooldown(3));
+                        
+                    }
+                    StartCoroutine(WallBounceCooldown(0.2f));
                 }
-                if (rb[0].velocity.x < 0) // left
-                {                 
-                    jumpMagnitude = rb[0].velocity.magnitude * 0.75f;
-                    
-                    Jump();
-                    canMove = false;
-                    StartCoroutine(EnableMovementAfterCooldown(3));
-                }
-                StartCoroutine(WallBounceCooldown(0.2f));
             } 
         }
         else
@@ -318,6 +325,7 @@ public class PetBehavior : MonoBehaviour
             jumpMagnitude = rb[0].velocity.magnitude * 0.9f;           
             Jump();
             StartCoroutine(WallBounceCooldown(0.2f));
+            Instantiate(ParticleBlob, transform.position, Quaternion.identity);
         }
         // Check if the raycast is away from ground and touching right wall;
         if (leftHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3 && CanWallBounce)
@@ -327,6 +335,7 @@ public class PetBehavior : MonoBehaviour
             jumpMagnitude = rb[0].velocity.magnitude * 0.9f;          
             Jump();
             StartCoroutine(WallBounceCooldown(0.2f));
+            Instantiate(ParticleBlob, transform.position, Quaternion.identity);
         }
 
     }

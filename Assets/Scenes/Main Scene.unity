@@ -2647,7 +2647,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c56ec56f8031048b52d9a030d4592a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingSize: 1
+  startingSize: 3
   Centers:
   - {fileID: 184305541}
   - {fileID: 408772376}
@@ -2940,6 +2940,7 @@ MonoBehaviour:
   wallLayer:
     serializedVersion: 2
     m_Bits: 128
+  ParticleBlob: {fileID: 4913372846223137524, guid: 33e7cb2e0c640144a9fe2c0c65adb039, type: 3}
   rb:
   - {fileID: 615271737}
   - {fileID: 557267781}
