@@ -34,7 +34,7 @@ public class TransparentWindow : MonoBehaviour {
     [DllImport("user32.dll")]
     static extern int SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
 
-    
+   // public Color _color;
 
     private struct MARGINS {
         public int cxLeftWidth;
@@ -60,7 +60,7 @@ public class TransparentWindow : MonoBehaviour {
 
     private void Start() {
 
-        
+
 #if !UNITY_EDITOR
         
         gameObject.GetComponent<Camera>().backgroundColor = Color.black;
@@ -74,6 +74,8 @@ public class TransparentWindow : MonoBehaviour {
         SetLayeredWindowAttributes(hWnd, 0, 0, LWA_COLORKEY);
 
         SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, 0);
+        
+
 #endif
 
         Application.runInBackground = true;
