@@ -73,7 +73,7 @@ public class TransparentWindow : MonoBehaviour {
         SetWindowLong(hWnd, GWL_EXSTYLE, WS_EX_LAYERED);
         SetLayeredWindowAttributes(hWnd, 0, 0, LWA_COLORKEY);
 
-        SetWindowPos(hWnd, HWND_BOTTOM, 0, 0, 0, 0, 0);
+        SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
         
 
 #endif

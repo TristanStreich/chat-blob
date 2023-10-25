@@ -1,22 +1,22 @@
 fileFormatVersion: 2
-guid: b73ad5f67891ff5428e4318aff4e02c1
+guid: 1cfce87681da0a047b99c887ea15387e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7388461422666777651
-    second: Sleepy_Eyes_Blobby_0
+      213: 8998667810197996635
+    second: pixil-frame-0(2)_0
   - first:
-      213: 1828419429056193278
-    second: Sleepy_Eyes_Blobby_1
+      213: -7533270197215068750
+    second: pixil-frame-0(2)_1
   - first:
-      213: 6072579040268439508
-    second: Sleepy_Eyes_Blobby_2
+      213: 3284722848375026237
+    second: pixil-frame-0(2)_2
   - first:
-      213: 62584806093281069
-    second: Sleepy_Eyes_Blobby_3
+      213: -384634076795621332
+    second: pixil-frame-0(2)_3
   - first:
-      213: -7342420743928357138
-    second: Sleepy_Eyes_Blobby_4
+      213: 3387635822453725886
+    second: pixil-frame-0(2)_4
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -83,7 +83,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -95,7 +95,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -106,7 +106,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sleepy_Eyes_Blobby_0
+      name: pixil-frame-0(2)_0
       rect:
         serializedVersion: 2
         x: 0
@@ -120,14 +120,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dcbf4495b79e67990800000000000000
-      internalID: -7388461422666777651
+      spriteID: b54089642b0b1ec70800000000000000
+      internalID: 8998667810197996635
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sleepy_Eyes_Blobby_1
+      name: pixil-frame-0(2)_1
       rect:
         serializedVersion: 2
         x: 96
@@ -141,14 +141,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ef2215988c9df5910800000000000000
-      internalID: 1828419429056193278
+      spriteID: 2bd75f92ba2747790800000000000000
+      internalID: -7533270197215068750
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sleepy_Eyes_Blobby_2
+      name: pixil-frame-0(2)_2
       rect:
         serializedVersion: 2
         x: 192
@@ -162,14 +162,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4dfcea59672264450800000000000000
-      internalID: 6072579040268439508
+      spriteID: d32b003070ea59d20800000000000000
+      internalID: 3284722848375026237
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sleepy_Eyes_Blobby_3
+      name: pixil-frame-0(2)_3
       rect:
         serializedVersion: 2
         x: 288
@@ -183,14 +183,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d27d68fac885ed000800000000000000
-      internalID: 62584806093281069
+      spriteID: c203614585189aaf0800000000000000
+      internalID: -384634076795621332
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Sleepy_Eyes_Blobby_4
+      name: pixil-frame-0(2)_4
       rect:
         serializedVersion: 2
         x: 384
@@ -204,8 +204,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: eeed0b63c3b7a1a90800000000000000
-      internalID: -7342420743928357138
+      spriteID: eba1eb105dc430f20800000000000000
+      internalID: 3387635822453725886
       vertices: []
       indices: 
       edges: []
@@ -213,7 +213,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 1477758a5de46304284e325ec01cb1e4
+    spriteID: f85e41899dcd0f24797b071d7d6b3d36
     internalID: 0
     vertices: []
     indices: 

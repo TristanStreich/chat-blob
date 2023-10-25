@@ -58,7 +58,11 @@ public class PetBehavior : MonoBehaviour
     bool naturalJump = true;
     bool CanWallBounce = true;
 
+    //particles
     public GameObject ParticleBlob;
+
+    //Other stuff oranize later
+    private PetScaleScript _PetScale;
 
     private enum movementStates
     {
@@ -90,6 +94,8 @@ public class PetBehavior : MonoBehaviour
         currentSpeed = 0;
         randomDirection = UnityEngine.Random.Range(0, 2) == 0 ? -1 : 1;
         sitStillFreqOG = sitStillFrequency;
+
+        _PetScale = gameObject.GetComponent<PetScaleScript>();
 }
 
     void Update()
@@ -104,6 +110,8 @@ public class PetBehavior : MonoBehaviour
         WallJumpCheck();
         //timers and such for moving and other idle activities
         IdleMoveMovement();
+        
+        
         
     }
 
@@ -249,7 +257,7 @@ public class PetBehavior : MonoBehaviour
             // GameObject is close to the ground
             grounded = true;
             
-            if (rb[0].velocity.magnitude > 15 && !isHeld )
+            if (rb[0].velocity.magnitude > 22 && !isHeld )
             {
                 //spawns particles on fast contact with obstacles, more particles when the speed is faster.
                 Instantiate(ParticleBlob, transform.position, Quaternion.identity);
@@ -362,6 +370,32 @@ public class PetBehavior : MonoBehaviour
                 currentState = movementStates.Awake;
                 ChangeMovementState();
             }
+        }
+    }
+
+    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        FoodCheck(collision);
+    }
+
+    private void FoodCheck(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Food"))
+        {
+
+            _PetScale.Grow();
+
+            // You can destroy the food object if needed.
+            Destroy(collision.gameObject);
+        }
+        if (collision.gameObject.CompareTag("ShrinkFood"))
+        {
+
+            _PetScale.Shrink();
+
+            // You can destroy the food object if needed.
+            Destroy(collision.gameObject);
         }
     }
 

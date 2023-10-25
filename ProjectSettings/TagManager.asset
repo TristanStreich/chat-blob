@@ -8,6 +8,8 @@ TagManager:
   - ClickAndDrag
   - Blob
   - Body
+  - Food
+  - ShrinkFood
   layers:
   - Default
   - TransparentFX
