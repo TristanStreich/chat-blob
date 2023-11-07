@@ -4,9 +4,24 @@ using UnityEngine;
 
 public class EdgeOfScreenColliderScript : MonoBehaviour
 {
+    public static EdgeOfScreenColliderScript _EdgeOfScreenColliderScript = null;
+
+    private void Awake()
+    {
+        if (_EdgeOfScreenColliderScript == null)
+        {
+            _EdgeOfScreenColliderScript = this;
+        }
+        else
+        {
+            DestroyImmediate(this);
+        }
+    }
+
     public float colDepth = 3f;
     public PhysicsMaterial2D friction;
-    private Vector2 screenSize;
+    [HideInInspector]
+    public Vector2 screenSize;
     private Transform topCollider;
     private Transform bottomCollider;
     private Transform rightCollider;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class BlobClickandDrag : MonoBehaviour
@@ -22,9 +23,13 @@ public class BlobClickandDrag : MonoBehaviour
     public Rigidbody2D MainBody;
     public GameObject ParticleBlob;
 
+   
+
 
     private void Start()
     {
+
+        //getting list of clickable Joints
         GameObject[] bodyObjects = GameObject.FindGameObjectsWithTag("Body");
         dynamicBodies = new Rigidbody2D[bodyObjects.Length];
         for (int i = 0; i < bodyObjects.Length; i++)
@@ -58,26 +63,27 @@ public class BlobClickandDrag : MonoBehaviour
                 TooFast();
                 Debug.Log("The boy escaped");
             }
+
         }
         
     }
 
     private void OnMouseDown()
     {
-        //Debug.Log("Clicked");
-        isDragging = true;
+            isDragging = true;
+
+            previousMousePosition = GetMouseWorldPosition();
+
+            clickedRigidbody = GetComponentInParent<Rigidbody2D>();
+            clickedRigidbody.bodyType = RigidbodyType2D.Static;
+            clickedRigidbody.position = GetMouseWorldPosition();
+
+            Cursor.visible = false;
+
+            PetBehavior.PetBehav.isHeld = true;
+
+            MakeDynamicBodiesStayDynamic();
         
-        previousMousePosition = GetMouseWorldPosition();
-
-        clickedRigidbody = GetComponentInParent<Rigidbody2D>();
-        clickedRigidbody.bodyType = RigidbodyType2D.Static;
-        clickedRigidbody.position = GetMouseWorldPosition();
-        
-        Cursor.visible = false;
-
-        PetBehavior.PetBehav.isHeld = true;
-
-        MakeDynamicBodiesStayDynamic();
     }
 
     private void OnMouseUp()

@@ -1,58 +1,101 @@
 using System;
 using UnityEngine;
 
+
+
 public class GameManager : MonoBehaviour
 {
-    public string bodyTag = "Body";
-    public float searchRadius = 1f;
+    public static GameManager GameMan = null;
+
+    public Transform SpawnPos;
+
+    public Transform PlayerPos;
+
+    [Header("Spawnables")]
+    public GameObject GrowFood;
+    public GameObject ShrinkFood;
+    public GameObject Ball;
+
+    private float minXOffset = -2.0f; // Minimum X offset
+    private float maxXOffset = 2.0f; // Maximum X offset
+    private float minYOffset = -2.0f; // Minimum Y offset
+    private float maxYOffset = 2.0f; // Maximum Y offset
+
+    private GameObject MicroOptions;
+    private RectTransform MicroRec;
+    public RectTransform CanvasRec;
+    public Camera mainCamera;
+
+    private void Awake()
+    {
+        if (GameMan == null)
+        {
+            GameMan = this;
+        }
+        else
+        {
+            DestroyImmediate(this);
+        }
+    }
+    private void Start()
+    {
+        //setting up the ability to Right Click Blob
+        MicroOptions = GameObject.Find("MicroOptions");
+        MicroRec = MicroOptions.GetComponent<RectTransform>();
+        if (MicroOptions == null)
+        {
+            Debug.Log("The right click actions are name dependent");
+        }
+    }
+
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonUp(1))
         {
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(mousePosition, searchRadius);
-
-            if (colliders.Length > 0)
-            {
-                Collider2D nearestCollider = GetNearestCollider(colliders, mousePosition);
-                if (nearestCollider.CompareTag(bodyTag))
-                {
-                    GrabObject(nearestCollider.gameObject, mousePosition);
-                }
-            }
-        }
+            OpenMicroMenu();
+        } 
     }
-
-    private Collider2D GetNearestCollider(Collider2D[] colliders, Vector2 referencePosition)
+    
+    public void OpenMicroMenu()
     {
-        Collider2D nearestCollider = colliders[0];
-        float nearestDistance = Vector2.Distance(referencePosition, nearestCollider.transform.position);
-
-        for (int i = 1; i < colliders.Length; i++)
+        Vector2 mousePosition = Input.mousePosition;
+        Vector2 mousePositionWorld = Camera.main.ScreenToWorldPoint(mousePosition);
+        Vector2 between = mousePositionWorld - new Vector2(PlayerPos.position.x, PlayerPos.position.y);
+        if (between.magnitude < 2)
         {
-            float distance = Vector2.Distance(referencePosition, colliders[i].transform.position);
-            if (distance < nearestDistance)
-            {
-                nearestDistance = distance;
-                nearestCollider = colliders[i];
-            }
+            MicroOptions.SetActive(true);
+            MicroRec.position = new Vector3(mousePosition.x, mousePosition.y, CanvasRec.position.z);
         }
-
-        return nearestCollider;
+        else { MicroOptions.SetActive(false); }
     }
 
-    private void GrabObject(GameObject obj, Vector2 position)
+    private void SpawnObject(GameObject spawned)
     {
-        // Snap the object to the mouse position
-        obj.transform.position = position;
+        float randomXOffset = UnityEngine.Random.Range(minXOffset, maxXOffset);
+        float randomYOffset = UnityEngine.Random.Range(minYOffset, maxYOffset);
 
-        // Perform any additional logic for grabbing the object
-        BlobClickandDrag BlobClickandDrag = obj.GetComponent<BlobClickandDrag>();
-        if (BlobClickandDrag != null)
+        Vector3 spawnPosition = SpawnPos.position + new Vector3(randomXOffset, randomYOffset, 0);
+
+        if (PlayerPos.position.x < 0)
         {
-            //BlobClickandDrag.OnMouseDown();
-            //BlobClickandDrag.OnMouseDrag(); // Trigger the OnMouseDrag event
+            spawnPosition.x *= -1;
         }
+      
+        Instantiate(spawned, spawnPosition, Quaternion.identity);
     }
+
+    public void _GrowFoodSpawn()
+    {
+        SpawnObject(GrowFood);
+    }
+    public void _ShrinkFoodSpawn()
+    {
+        SpawnObject(ShrinkFood);
+    }
+    public void _BallSpawn()
+    {
+        SpawnObject(Ball);
+    }
+
 }

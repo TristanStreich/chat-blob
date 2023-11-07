@@ -58,12 +58,12 @@ public class PetBehavior : MonoBehaviour
     bool naturalJump = true;
     bool CanWallBounce = true;
 
-    //particles
+    [Header("Particles")]
     public GameObject ParticleBlob;
 
     //Other stuff oranize later
     private PetScaleScript _PetScale;
-
+    
     private enum movementStates
     {
         Awake,
@@ -388,6 +388,7 @@ public class PetBehavior : MonoBehaviour
 
             // You can destroy the food object if needed.
             Destroy(collision.gameObject);
+            Cursor.visible = true;
         }
         if (collision.gameObject.CompareTag("ShrinkFood"))
         {
@@ -396,6 +397,7 @@ public class PetBehavior : MonoBehaviour
 
             // You can destroy the food object if needed.
             Destroy(collision.gameObject);
+            Cursor.visible = true;
         }
     }
 
