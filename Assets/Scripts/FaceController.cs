@@ -92,8 +92,12 @@ public class FaceController : MonoBehaviour
             case Expressions.Shocked:
                 Debug.Log("shocked");                
                 break;
-            case Expressions.Tired:                                                  
-                Debug.Log("tired");                
+            case Expressions.Tired:
+                for (int i = 0; i < eyes.Length; i++)
+                {
+                    eyes[i].GetComponent<Animator>().Play("EyeLow");
+                    Debug.Log("tired");
+                }
                 break;
             case Expressions.Asleep:               
                 Debug.Log("asleep");                
@@ -118,5 +122,4 @@ public class FaceController : MonoBehaviour
         }
     }
 
-   
 }

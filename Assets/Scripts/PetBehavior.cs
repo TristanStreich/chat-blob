@@ -32,7 +32,7 @@ public class PetBehavior : MonoBehaviour
     public float jumpAtMouseCooldown = 3f;
     private bool mouseNearby;
     [HideInInspector]
-    public bool canMove = true, isHeld = false;
+    public bool canMove = true, isHeld = false, sitting = false;
 
 
     // Jump Variables
@@ -69,7 +69,7 @@ public class PetBehavior : MonoBehaviour
         Awake,
         Tired,
         Asleep,
-        DeepAsleep
+        DeepAsleep,
     }
     private movementStates currentState = movementStates.Awake;
 
@@ -120,7 +120,7 @@ public class PetBehavior : MonoBehaviour
     void IdleMoveMovement()
     {
         
-        if (canMove && !isHeld && grounded)
+        if (canMove && !isHeld && grounded && !sitting)
         {
             #region Random Walking
             
@@ -362,6 +362,7 @@ public class PetBehavior : MonoBehaviour
             {
                 currentState = movementStates.Tired;
                 ChangeMovementState();
+                FaceController.FaceManager.ChangeFace(FaceController.Expressions.Tired);
             }
         }
         else 
@@ -435,6 +436,7 @@ public class PetBehavior : MonoBehaviour
                 EnergyLevel = 0f;
                 break;
 
+
         }
 
     }
@@ -449,7 +451,14 @@ public class PetBehavior : MonoBehaviour
                 break;
         }
     }
-
+    public void _ToggleSit()
+    {
+        if (sitting)
+        {
+            sitting = false;
+        }   
+        else sitting = true;
+    }
 }
 
     

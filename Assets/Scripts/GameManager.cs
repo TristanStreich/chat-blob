@@ -21,8 +21,8 @@ public class GameManager : MonoBehaviour
     private float minYOffset = -2.0f; // Minimum Y offset
     private float maxYOffset = 2.0f; // Maximum Y offset
 
-    private GameObject MicroOptions;
-    private RectTransform MicroRec;
+    public GameObject MicroOptions;
+    public RectTransform MicroRec;
     public RectTransform CanvasRec;
     public Camera mainCamera;
 
@@ -37,17 +37,6 @@ public class GameManager : MonoBehaviour
             DestroyImmediate(this);
         }
     }
-    private void Start()
-    {
-        //setting up the ability to Right Click Blob
-        MicroOptions = GameObject.Find("MicroOptions");
-        MicroRec = MicroOptions.GetComponent<RectTransform>();
-        if (MicroOptions == null)
-        {
-            Debug.Log("The right click actions are name dependent");
-        }
-    }
-
 
     private void Update()
     {
