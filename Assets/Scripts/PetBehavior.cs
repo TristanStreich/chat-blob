@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using JetBrains.Annotations;
+using Unity.Mathematics;
 
 public class PetBehavior : MonoBehaviour
 {
@@ -32,8 +33,12 @@ public class PetBehavior : MonoBehaviour
     public float jumpAtMouseCooldown = 3f;
     private bool mouseNearby;
     [HideInInspector]
-    public bool canMove = true, isHeld = false, sitting = false;
+    public bool canMove, isHeld, sitting, isLate;
 
+    // Mouse Interaction Variables
+    [Header("Idle Action")]
+    private float idleTime = 0f;
+    private float minIdleDuration = 5f;  // Minimum idle time before triggering an event (in seconds).
 
     // Jump Variables
     [Header("Jumping")]
@@ -71,7 +76,7 @@ public class PetBehavior : MonoBehaviour
         Asleep,
         DeepAsleep,
     }
-    private movementStates currentState = movementStates.Awake;
+    private movementStates readState = movementStates.Awake;
 
     public Rigidbody2D[] rb;
 
@@ -96,12 +101,13 @@ public class PetBehavior : MonoBehaviour
         sitStillFreqOG = sitStillFrequency;
 
         _PetScale = gameObject.GetComponent<PetScaleScript>();
-}
+
+        canMove = true; isHeld = false; sitting = false; isLate = false;
+    }
 
     void Update()
     {
-        //check if sleepy
-        ReadWorlTime();
+
         //check for ground
         GroundCheck();
         //check for walls
@@ -165,6 +171,7 @@ public class PetBehavior : MonoBehaviour
                 
             }
             #endregion
+            
             #region Mouse Interaction
             // Mouse Interaction
             if (mouseNearby && UnityEngine.Random.value < jumpAtMouseChance)
@@ -174,12 +181,33 @@ public class PetBehavior : MonoBehaviour
                 StartCoroutine(EnableMovementAfterCooldown(jumpAtMouseCooldown));
             }
             #endregion
+
+            #region Idle Action Timer
+            // Increment idle time if the player is not interacting.
+            idleTime += Time.deltaTime;
+
+            // Check if the idle time exceeds the minimum threshold.
+            if (idleTime >= minIdleDuration && readState != movementStates.DeepAsleep) //will not proc more Idle actions if blobby is deep asleep
+            {
+                StartCoroutine(TriggerRandomEvent());
+
+                idleTime = 0f;
+            }
+            #endregion
         }
         if (isHeld)
         {
             naturalJump = false;
+            
+            idleTime = 0f; // Reset idle time when the player interacts with the pet.
+            if (readState != movementStates.Awake && readState != movementStates.DeepAsleep) //will not set to awake if already awake or Deep asleep
+            { 
+                ChangeMovementState(movementStates.Awake); 
+            }
+
         }
     }
+
     void sitStill()
     {
         sitStillFrequency -= 0.1f;
@@ -272,8 +300,7 @@ public class PetBehavior : MonoBehaviour
 
                         Jump();
                         canMove = false;
-                        StartCoroutine(EnableMovementAfterCooldown(3));
-                        
+                        StartCoroutine(EnableMovementAfterCooldown(3));                        
                     }
                     if (rb[0].velocity.x < 0) // left
                     {
@@ -285,6 +312,10 @@ public class PetBehavior : MonoBehaviour
                         
                     }
                     StartCoroutine(WallBounceCooldown(0.2f));
+                }
+                if (readState == movementStates.DeepAsleep) //Will wake blob from deep sleep if slammed down
+                {
+                    ChangeMovementState(movementStates.Awake);
                 }
             } 
         }
@@ -324,9 +355,15 @@ public class PetBehavior : MonoBehaviour
 
     private void WallJumpCheck()
     {
-        
-        // Check if the raycast is away from ground and touching right wall;
-        if (rightHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3 && CanWallBounce)
+        int wallBounceMag;
+        if (readState == movementStates.DeepAsleep) //requries the magnitude for wallbounce to be higher when sleeping deeply
+        {
+            wallBounceMag = 10;
+        }
+        else wallBounceMag = 3;
+
+            // Check if the raycast is away from ground and touching right wall;
+            if (rightHit.collider != null && !isHeld && rb[0].velocity.magnitude > wallBounceMag && CanWallBounce)
         {
             // GameObject is close to wall
             jumpAngle = 45;
@@ -334,9 +371,13 @@ public class PetBehavior : MonoBehaviour
             Jump();
             StartCoroutine(WallBounceCooldown(0.2f));
             Instantiate(ParticleBlob, transform.position, Quaternion.identity);
+            if (readState == movementStates.DeepAsleep) //Will wake blob from deep sleep if slammed down
+            {
+                ChangeMovementState(movementStates.Awake);
+            }
         }
         // Check if the raycast is away from ground and touching right wall;
-        if (leftHit.collider != null && !isHeld && rb[0].velocity.magnitude > 3 && CanWallBounce)
+        if (leftHit.collider != null && !isHeld && rb[0].velocity.magnitude > wallBounceMag && CanWallBounce)
         {
             // GameObject is close to  wall
             jumpAngle = -45;
@@ -344,13 +385,93 @@ public class PetBehavior : MonoBehaviour
             Jump();
             StartCoroutine(WallBounceCooldown(0.2f));
             Instantiate(ParticleBlob, transform.position, Quaternion.identity);
+            if (readState == movementStates.DeepAsleep) //Will wake blob from deep sleep if slammed down
+            {
+                ChangeMovementState(movementStates.Awake);
+            }
         }
 
     }
 
     #endregion
 
-    
+    #region IdleActions
+    private void DoRandomEvent()
+    {
+        int randomEvent = 0;
+
+        //check if sleepy
+        ReadWorlTime();
+        //if its late make 50% of all idle actions be "get tired / sleep"
+        if (isLate || readState == movementStates.Tired) 
+        {
+            int coinFlipSleepyAction = UnityEngine.Random.Range(0, 2);
+            if (coinFlipSleepyAction == 0)
+            {
+                randomEvent = 2; //sleepy event
+            }
+            else
+            {
+                randomEvent = UnityEngine.Random.Range(1, 6); // ranomly pick an event
+            }
+        }
+        else
+        {
+            randomEvent = UnityEngine.Random.Range(1, 6); // ranomly pick an event
+        }
+        switch (randomEvent)
+        {
+            case 1:
+                Debug.Log("Blob is dancing!");
+                // Add dancing logic here.
+                break;
+            case 2:
+                Debug.Log("Blob is sleepy");
+
+                if (readState == movementStates.Awake)
+                {
+                    ChangeMovementState(movementStates.Tired);
+                    
+                }
+                
+                else if (readState == movementStates.Tired)
+                {
+                    ChangeMovementState(movementStates.Asleep);
+                    
+                }
+
+                else if (readState == movementStates.Asleep)
+                {
+                    ChangeMovementState(movementStates.DeepAsleep);
+                    
+                }
+                break;
+            case 3:
+                Debug.Log("Blob is playing!");
+                // Add playing logic here.
+                break;
+            case 4:
+                Debug.Log("Blob is curious");
+                // Add curious logic here.
+                break;
+            case 5:
+                Debug.Log("Blob is imitating shapes");
+                // Add imitating logic here.
+                break;
+
+        }
+    }
+
+    private IEnumerator TriggerRandomEvent()
+    {
+        float randomIdleDuration = UnityEngine.Random.Range(0, minIdleDuration); // wait between 0 and 60 sec after after being idle for a minute
+        yield return new WaitForSeconds(randomIdleDuration);
+
+        DoRandomEvent();
+
+    }
+    #endregion
+
     private void ReadWorlTime()
     {
         DateTime currentTime = DateTime.Now;
@@ -358,19 +479,11 @@ public class PetBehavior : MonoBehaviour
         // Check if the current time is past 8:00 PM
         if (currentTime.Hour >= 20)
         {
-            if (currentState == movementStates.Awake)
-            {
-                currentState = movementStates.Tired;
-                ChangeMovementState();
-                FaceController.FaceManager.ChangeFace(FaceController.Expressions.Tired);
-            }
+            isLate = true;
         }
         else 
-        { if (currentState != movementStates.Awake)
-            {
-                currentState = movementStates.Awake;
-                ChangeMovementState();
-            }
+        { 
+            isLate = false;
         }
     }
 
@@ -402,8 +515,9 @@ public class PetBehavior : MonoBehaviour
         }
     }
 
-    private void ChangeMovementState()
+    private void ChangeMovementState(movementStates currentState)
     {
+        readState = currentState;
         switch (currentState)
         {
             case movementStates.Awake:
@@ -413,23 +527,10 @@ public class PetBehavior : MonoBehaviour
             case movementStates.Tired:
                 FaceController.FaceManager.ChangeFace(FaceController.Expressions.Tired);
                 EnergyLevel = 0.5f;
-                float timerElapsed = 0f;
-                timerElapsed += Time.deltaTime;
-                Debug.Log(timerElapsed);
-                if (timerElapsed >= 10)
-                {
-                    currentState = movementStates.Asleep;
-                }
                 break;
             case movementStates.Asleep:
                 FaceController.FaceManager.ChangeFace(FaceController.Expressions.Asleep);
-                EnergyLevel = 0f;
-                float timer2Elapsed = 0f;
-                timer2Elapsed += Time.deltaTime;
-                if (timer2Elapsed >= 60)
-                {
-                    currentState = movementStates.DeepAsleep;
-                }
+                EnergyLevel = 0f;              
                 break;
             case movementStates.DeepAsleep:
                 FaceController.FaceManager.ChangeFace(FaceController.Expressions.Asleep);

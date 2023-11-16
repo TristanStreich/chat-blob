@@ -95,9 +95,9 @@ public class FaceController : MonoBehaviour
             case Expressions.Tired:
                 for (int i = 0; i < eyes.Length; i++)
                 {
-                    eyes[i].GetComponent<Animator>().Play("EyeLow");
-                    Debug.Log("tired");
+                    eyes[i].GetComponent<Animator>().Play("EyeLow");                  
                 }
+                Debug.Log("tired");
                 break;
             case Expressions.Asleep:               
                 Debug.Log("asleep");                
